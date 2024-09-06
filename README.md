@@ -1,15 +1,15 @@
 # Trabalho 1 - ED3
 
 ## Tasklist
-[] Descricao geral do trabalho 
-[] Estruturacao das funcoes principais 
-[] Funcionalidade 1 
-[] Funcionalidade 2 
-[] Funcionalidade 3 
-[] Funcionalidade 4 
-[] Funcionalidade 5 
-[] Funcionalidade 6 
-[] Documentacao do codigo 
+[] Descricao geral do trabalho \
+[] Estruturacao das funcoes principais \
+[] Funcionalidade 1 \
+[] Funcionalidade 2 \
+[] Funcionalidade 3 \
+[] Funcionalidade 4 \
+[] Funcionalidade 5 \
+[] Funcionalidade 6 \
+[] Documentacao do codigo \
 [] Gravacao do video final 
 
 ## Objetivo
