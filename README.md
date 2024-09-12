@@ -41,7 +41,7 @@
     EX: 6 entrada.bin
 
 ## Dataset
-[Jurassic-park kaggle](./dataset/data.csv)
+[Jurassic-park kaggle](./data.csv)
 
 1. Name - the name of the dinosaur
 2. Diet - the diet of the dinosaur (herbivorous, carnivorous, or omnivorous)
