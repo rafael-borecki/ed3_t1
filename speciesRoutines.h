@@ -43,7 +43,7 @@ typedef struct
     char type[MAX_STR_LEN];
     char diet[MAX_STR_LEN];
     char food[MAX_STR_LEN];
-} Species;
+} Dinosaur;
 
 // definição das funções que serão utilizadas no arquivo main.c
 void registerSpecies(char *filename);

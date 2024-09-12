@@ -95,6 +95,8 @@ void printSpecies(Species temp_species)
 
 int ReadInput(char *command, char string1[], char string2[], char raw_string[])
 {
+    fgets(raw_string, MAX_STR_LEN, stdin);
+
     // verifica primeiro caractere
     *command = raw_string[0];
     if (*command < '1' || *command > '6')

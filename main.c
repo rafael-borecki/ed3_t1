@@ -19,7 +19,6 @@ int main()
     char inputstr[MAX_STR_LEN];
     char command, input1[MAX_STR_LEN], input2[MAX_STR_LEN];
 
-    fgets(inputstr, MAX_STR_LEN, stdin);
     ReadInput(&command, input1, input2, inputstr);
     setbuf(stdin, NULL);
 
