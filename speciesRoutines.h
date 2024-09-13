@@ -13,7 +13,11 @@
 #define STATUS_SIZE 9
 #define FILLER '$'
 
-#define MAX_STR_LEN 40
+#define MAX_STR_LEN 300
+#define AVR_STR_LEN 100
+#define MIN_STR_LEN 20
+
+#define MAX_CSV_LEN 500
 
 typedef struct
 {
@@ -32,17 +36,17 @@ typedef struct
     char removed;
     int chain;
     // campos de tamanho fixo
-    int population;
-    float length;
-    char measure_unit;
-    int velocity;
+    int population;    // não tem //nulo -1
+    float length;      // tem
+    char measure_unit; // não tem //nulo -1
+    int velocity;      // não tem //nulo -1
     // tamanho variável
-    char name[MAX_STR_LEN];
-    char specie_name[MAX_STR_LEN];
-    char habitat[MAX_STR_LEN];
-    char type[MAX_STR_LEN];
-    char diet[MAX_STR_LEN];
-    char food[MAX_STR_LEN];
+    char name[100];                // tem
+    char specie_name[MAX_STR_LEN]; // tem
+    char habitat[AVR_STR_LEN];     // tem
+    char type[AVR_STR_LEN];        // tem
+    char diet[MIN_STR_LEN];        // tem
+    char food[MIN_STR_LEN];        // não tem //preenche com $
 } Dinosaur;
 
 // definição das funções que serão utilizadas no arquivo main.c
@@ -52,5 +56,8 @@ int searchSpecies(char *filename, int ID);
 void searchSpeciesRRN(FILE *file);
 void registerInfoSpecies(FILE *file);
 int ReadInput(char *command, char string1[], char string2[], char raw_string[]);
+
+int ReadFromCsv(Dinosaur *temp_dimo, FILE *file);
+void printDino(Dinosaur temp_dino);
 
 #endif

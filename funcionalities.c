@@ -29,10 +29,21 @@ int funcionality1(char inputFileName[], char outputFileName[])
         return EXIT_FAILURE;
     }
 
-    // enquanto houver registro
+    // escreve o cabeçalho
+
     Dinosaur dino;
-    // read from .csv
-    // write on binary
+    while (1)
+    {
+        if (ReadFromCsv(&dino, file_in))
+        {
+            if (DEBUG)
+                printDino(dino);
+            // writeDino
+        }
+
+        else
+            break;
+    }
 
     return 1;
 }

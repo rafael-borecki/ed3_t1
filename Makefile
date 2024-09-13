@@ -1,6 +1,6 @@
 TARGET=main
 LD=gcc
-SRC=main.c speciesRoutines.c funcoesFornecidas.c
+SRC=main.c speciesRoutines.c funcoesFornecidas.c funcionalities.c
 
 all: $(TARGET)
 

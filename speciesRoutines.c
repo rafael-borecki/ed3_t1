@@ -3,8 +3,72 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-/*
-void readSpeciesFile(Species *temp_species, FILE *file)
+
+int ReadFromCsv(Dinosaur *temp_dino, FILE *file)
+{
+    char *line = malloc(MAX_CSV_LEN);
+    if (fgets(line, MAX_CSV_LEN, file))
+    {
+        char *token;
+        token = strsep(&line, ",");
+
+        // name
+        strcpy(temp_dino->name, token);
+        token = strsep(&line, ",");
+
+        // diet
+        strcpy(temp_dino->diet, token);
+        token = strsep(&line, ",");
+
+        // period
+        token = strsep(&line, ",");
+
+        // lived_in
+        strcpy(temp_dino->habitat, token);
+        token = strsep(&line, ",");
+
+        // type
+        strcpy(temp_dino->type, token);
+        token = strsep(&line, ",");
+        // length
+        char char_length[10];
+        // converter string para float
+        float temp = 1.0;
+        temp_dino->length = temp;
+
+        // printf("%s\n ", token);
+        token = strsep(&line, ",");
+
+        // taxonomy
+        // printf("%s\n ", token);
+        token = strsep(&line, ",");
+
+        // named_by
+        token = strsep(&line, ",");
+
+        // species
+        strcpy(temp_dino->specie_name, token);
+        token = strsep(&line, ",");
+
+        // link
+        token = strsep(&line, "\n");
+
+        // demais campos
+        temp_dino->removed = '0';
+        temp_dino->chain = 0;
+        temp_dino->population = 0;
+        temp_dino->measure_unit = 'm';
+        temp_dino->velocity = -1;
+        strcpy(temp_dino->food, "arroz");
+
+        free(line);
+        return 1;
+    }
+    free(line);
+    return 0;
+}
+
+/*void ReadFromCsv(Dinosaur *temp_dino, FILE *file)
 {
     fread(&temp_species->species_id, sizeof(int), 1, file);
     fread(temp_species->name, sizeof(char), NAME_SIZE, file);
@@ -15,12 +79,11 @@ void readSpeciesFile(Species *temp_species, FILE *file)
     fread(&temp_species->human_impact, sizeof(int), 1, file);
 }
 
-  writeSpeciesFile
- *
- * Recebe um registro salvo em struct Species e escreve no arquivo (binário) passado pelo ponteiro
- * file.
+writeSpeciesFile **Recebe um registro salvo em struct Species e escreve no arquivo(binário)
+passado pelo ponteiro *file.
+*/
 
-void writeSpeciesFile(Species *temp_species, FILE *file)
+/*void writeDinoFile(Dino *temp_species, FILE *file)
 {
     fwrite(&temp_species->species_id, sizeof(int), 1, file);
     fwrite(temp_species->name, NAME_SIZE * sizeof(char), 1, file);
@@ -32,12 +95,9 @@ void writeSpeciesFile(Species *temp_species, FILE *file)
     fwrite(&temp_species->human_impact, sizeof(int), 1, file);
 }
 
- searchSpecies
- *
- * Procura no arquivo "filename" algum registro com o mesmo ID passado no argumento da função
- *
- * Se achar um registro com ID igual, retorna 1
- * Se não, retorna 0;
+searchSpecies **Procura no arquivo "filename" algum registro com o mesmo ID passado no argumento da
+    função **Se achar um registro com ID igual,
+    retorna 1 * Se não, retorna 0;
 
 int searchSpecies(char *filename, int ID)
 {
@@ -76,23 +136,22 @@ int searchSpecies(char *filename, int ID)
 
     return 0;
 }
-void printSpecies(Species temp_species)
+void printDino(Dinosaur temp_dino)
 {
-    printf("ID: %d\n", temp_species.species_id);
-    printf("Nome: %s\n", temp_species.name);
-    printf("Nome Científico: %s\n", temp_species.scientific_name);
-    if (temp_species.population)
-        printf("População: %d\n", temp_species.population);
-    else
-        printf("População: NULO\n");
-    printf("Status: %s\n", temp_species.status);
-    printf("Localização: (%.2f, %.2f)\n", temp_species.location[0], temp_species.location[1]);
-    if (temp_species.human_impact)
-        printf("Impacto Humano: %d\n\n", temp_species.human_impact);
-    else
-        printf("Impacto Humano: NULO\n\n");
-}*/
-
+    printf("removed: %c\n", temp_dino.removed);
+    printf("chain: %d\n", temp_dino.chain);
+    printf("population: %d\n", temp_dino.population);
+    printf("length: %.2f\n", temp_dino.length);
+    printf("measure_unit: %c\n", temp_dino.measure_unit);
+    printf("velocity: %d\n", temp_dino.velocity);
+    printf("name: %s\n", temp_dino.name);
+    printf("specie_name: %s\n", temp_dino.specie_name);
+    printf("habitat: %s\n", temp_dino.habitat);
+    printf("type: %s\n", temp_dino.type);
+    printf("diet: %s\n", temp_dino.diet);
+    printf("food: %s\n\n", temp_dino.food);
+}
+*/
 int ReadInput(char *command, char string1[], char string2[], char raw_string[])
 {
     fgets(raw_string, MAX_STR_LEN, stdin);

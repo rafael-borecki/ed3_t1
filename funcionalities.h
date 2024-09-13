@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
+int funcionality1(char inputFileName[], char outputFileName[]);
 // void readline(char *string);
 
 /**

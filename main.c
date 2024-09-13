@@ -9,6 +9,7 @@
  */
 
 //#include "./funcoesFornecidas.h"
+#include "funcionalities.h"
 #include "speciesRoutines.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,35 +25,17 @@ int main()
 
     switch (command)
     {
-    case (1): {
-        /*int n;
-        scanf("%d", &n);
-        setbuf(stdin, NULL);
-
-        for (int i = 0; i < n; i++)
-        {
-            registerSpecies(filename);
-        }
-
-        FILE *file = fopen(filename, "rb");
-        if (!file)
-        {
-            printf("Falha no processamento do arquivo\n");
-            return EXIT_FAILURE;
-        }
-        fclose(file);
-
-        binarioNaTela(filename);
-
+    case ('1'): {
+        funcionality1(input1, input2);
         break;
-    */}
-        /*
-         * Para o caso 2, é aberto arquivo em modo de leitura binário, e é medido
-         * o seu comprimento em bytes com ajuda do fseek e ftell. Isso é feito
-         * para garantir que a funcao de leitura reportSpecies() não irá ser exe-
-         * cutada com redundancia.
-         */
-        case (2): {
+    }
+    /*
+     * Para o caso 2, é aberto arquivo em modo de leitura binário, e é medido
+     * o seu comprimento em bytes com ajuda do fseek e ftell. Isso é feito
+     * para garantir que a funcao de leitura reportSpecies() não irá ser exe-
+     * cutada com redundancia.
+     */
+    case (2): {
         /*FILE *file = fopen(filename, "rb");
         if (!file)
         {
