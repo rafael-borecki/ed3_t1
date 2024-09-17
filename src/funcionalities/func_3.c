@@ -1,4 +1,4 @@
-#include "funcoesFornecidas.h"
+/*#include "funcoesFornecidas.h"
 #include "speciesRoutines.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,4 +29,4 @@ int funcionality3(char inputFileName[], char num[])
     }
     // numero de paginas de disco
     return 1;
-}
+}*/

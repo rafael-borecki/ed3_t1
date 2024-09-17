@@ -1,4 +1,4 @@
-#include "funcoesFornecidas.h"
+/*#include "funcoesFornecidas.h"
 #include "speciesRoutines.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,4 +19,4 @@ int funcionality5(char inputFileName[], char num[])
     return 1;
 }
 
-
+*/

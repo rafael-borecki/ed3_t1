@@ -1,11 +1,11 @@
-#include "funcoesFornecidas.h"
+/*#include "funcoesFornecidas.h"
 #include "speciesRoutines.h"
 #include <stdio.h>
 #include <stdlib.h>
 
 int funcionality1(char inputFileName[], char outputFileName[])
 {
-    /*
+
     abre os dois arquivos
 
     fclose(file);
@@ -18,7 +18,7 @@ int funcionality1(char inputFileName[], char outputFileName[])
     salva no arquivo 2
     )
     binario na tela
-    */
+
 
     FILE *file_in, *file_out;
     file_in = fopen(inputFileName, "r");
@@ -35,4 +35,4 @@ int funcionality1(char inputFileName[], char outputFileName[])
     // write on binary
 
     return 1;
-}
+}*/

@@ -13,11 +13,13 @@
 #define STATUS_SIZE 9
 #define FILLER '$'
 
+#define MAX_REGISTER_LEN 160
+
 #define MAX_STR_LEN 300
 #define AVR_STR_LEN 100
 #define MIN_STR_LEN 20
 
-#define MAX_CSV_LEN 500
+#define MAX_CSV_LEN 160
 
 typedef struct
 {
@@ -41,8 +43,8 @@ typedef struct
     char measure_unit; // não tem //nulo -1
     int velocity;      // não tem //nulo -1
     // tamanho variável
-    char name[100];                // tem
-    char specie_name[MAX_STR_LEN]; // tem
+    char name[MAX_CSV_LEN];        // tem
+    char specie_name[MAX_CSV_LEN]; // tem
     char habitat[AVR_STR_LEN];     // tem
     char type[AVR_STR_LEN];        // tem
     char diet[MIN_STR_LEN];        // tem
@@ -59,5 +61,6 @@ int ReadInput(char *command, char string1[], char string2[], char raw_string[]);
 
 int ReadFromCsv(Dinosaur *temp_dimo, FILE *file);
 void printDino(Dinosaur temp_dino);
-
+void ReadFromFile(Dinosaur *temp_dino, FILE *file);
+void writeDinoFile(Dinosaur *temp_species, FILE *file);
 #endif

@@ -1,6 +1,7 @@
 #ifndef __FUNCIONALITIES__
 #define __FUNCIONALITIES__
 
+#include "./speciesRoutines.h"
 #include <stdio.h>
 #include <stdlib.h>
 int funcionality1(char inputFileName[], char outputFileName[]);

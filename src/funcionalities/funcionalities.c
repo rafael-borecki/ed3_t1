@@ -1,7 +1,4 @@
-#include "funcoesFornecidas.h"
-#include "speciesRoutines.h"
-#include <stdio.h>
-#include <stdlib.h>
+#include "./../../headers/funcionalities.h"
 
 int funcionality1(char inputFileName[], char outputFileName[])
 {
@@ -37,17 +34,22 @@ int funcionality1(char inputFileName[], char outputFileName[])
         if (ReadFromCsv(&dino, file_in))
         {
             if (DEBUG)
+            {
+                // MUDAR PRINT DINO
                 printDino(dino);
+            }
             // writeDino
         }
 
         else
+        {
             break;
+        }
     }
 
     return 1;
 }
-int funcionality2(char inputFileName[])
+/*int funcionality2(char inputFileName[])
 {
     FILE *file_in;
     file_in = fopen(inputFileName, "r");
@@ -136,4 +138,4 @@ int funcionality6(char inputFileName[])
     // fecha o arquivo
     binarioNaTela(inputFileName);
     return 1;
-}
+}*/

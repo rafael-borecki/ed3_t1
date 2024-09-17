@@ -1,4 +1,4 @@
-#include "funcoesFornecidas.h"
+/*#include "funcoesFornecidas.h"
 #include "speciesRoutines.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,4 +25,4 @@ int funcionality4(char inputFileName[], char num[])
     binarioNaTela(inputFileName);
     return 1;
 }
-
+*/
