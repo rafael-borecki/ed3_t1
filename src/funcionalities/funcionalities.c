@@ -1,22 +1,10 @@
 #include "./../../headers/funcionalities.h"
+#include <stdio.h>
+
+#define DEBUG_FUNC1 0
 
 int funcionality1(char inputFileName[], char outputFileName[])
 {
-    /*
-    abre os dois arquivos
-
-    fclose(file);
-
-    stuct dinossauro
-
-    enquanto houver linha a ser lida(
-    lê do arquivo
-    salva correspondente na struct
-    salva no arquivo 2
-    )
-    binario na tela
-    */
-
     FILE *file_in, *file_out;
     file_in = fopen(inputFileName, "r");
     file_out = fopen(outputFileName, "wb");
@@ -28,24 +16,28 @@ int funcionality1(char inputFileName[], char outputFileName[])
 
     // escreve o cabeçalho
 
+    char lixo[160];
+    fgets(lixo, 160, file_in);
     Dinosaur dino;
     while (1)
     {
+
         if (ReadFromCsv(&dino, file_in))
         {
-            if (DEBUG)
-            {
-                // MUDAR PRINT DINO
+            if (DEBUG_FUNC1)
                 printDino(dino);
-            }
-            // writeDino
+            writeDinoFile(&dino, file_out);
         }
-
         else
-        {
+
             break;
-        }
     }
+
+    fclose(file_out);
+    fclose(file_in);
+
+    if (DEBUG_FUNC1)
+        DebugFile(outputFileName);
 
     return 1;
 }

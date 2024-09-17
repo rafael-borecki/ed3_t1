@@ -2,11 +2,55 @@
 #include <stdio.h>
 #include <string.h>
 
+#define DEBUG1 1
+
+#define DEBUG2 1
+
+void DebugFile(char filename[])
+{
+    FILE *fp;
+    fp = fopen(filename, "rb");
+    if (!fp)
+        return;
+
+    if (DEBUG1)
+    {
+        fseek(fp, 0, SEEK_END);
+        int filelen = ftell(fp);
+        fseek(fp, 0, SEEK_SET);
+        char buffer;
+
+        for (int i = 0; i < filelen; i++)
+        {
+            fread(&buffer, 1, 1, fp);
+            printf("%u ", buffer);
+        }
+    }
+    if (DEBUG2)
+    {
+        fseek(fp, 0, SEEK_SET);
+        Dinosaur temp;
+        ReadFromFile(&temp, fp);
+        printDino(temp);
+        ReadFromFile(&temp, fp);
+        printDino(temp);
+        ReadFromFile(&temp, fp);
+        printDino(temp);
+        ReadFromFile(&temp, fp);
+        printDino(temp);
+    }
+
+    fclose(fp);
+}
+
 int ReadFromCsv(Dinosaur *temp_dino, FILE *file)
 {
-    char line[MAX_CSV_LEN];
+    char line[MAX_CSV_LEN + 1];
     if (fgets(line, MAX_CSV_LEN, file) != NULL)
     {
+        line[strlen(line)] = ',';
+        line[strlen(line) + 1] = '\0';
+
         char *token;
         token = strtok(line, ",");
         // name
@@ -52,12 +96,16 @@ int ReadFromCsv(Dinosaur *temp_dino, FILE *file)
 void ReadFromFile(Dinosaur *temp_dino, FILE *file)
 {
     // dados fixos
-    fread(&temp_dino->removed, sizeof(int), 1, file);
-    fread(&temp_dino->chain, sizeof(char), NAME_SIZE, file);
-    fread(&temp_dino->population, sizeof(char), SCIENTIFIC_SIZE, file);
-    fread(&temp_dino->length, sizeof(int), 1, file);
-    fread(&temp_dino->measure_unit, sizeof(char), STATUS_SIZE, file);
-    fread(&temp_dino->velocity, sizeof(float), 2, file);
+    int readed_bytes = 0;
+
+    fread(&temp_dino->removed, sizeof(char), 1, file);
+    fread(&temp_dino->chain, sizeof(int), 1, file);
+    fread(&temp_dino->population, sizeof(int), 1, file);
+    fread(&temp_dino->length, sizeof(float), 1, file);
+    fread(&temp_dino->measure_unit, sizeof(char), 1, file);
+    fread(&temp_dino->velocity, sizeof(int), 1, file);
+
+    readed_bytes += 18;
 
     // dados variados
     int temp_length;
@@ -65,26 +113,34 @@ void ReadFromFile(Dinosaur *temp_dino, FILE *file)
     fread(&temp_length, sizeof(int), 1, file);
     fread(&temp_dino->name, sizeof(char), temp_length, file);
     fread(&thrash, sizeof(char), 1, file);
+    readed_bytes += (temp_length + 5);
 
     fread(&temp_length, sizeof(int), 1, file);
     fread(&temp_dino->specie_name, sizeof(char), temp_length, file);
     fread(&thrash, sizeof(char), 1, file);
+    readed_bytes += (temp_length + 5);
 
     fread(&temp_length, sizeof(int), 1, file);
     fread(&temp_dino->habitat, sizeof(char), temp_length, file);
     fread(&thrash, sizeof(char), 1, file);
+    readed_bytes += (temp_length + 5);
 
     fread(&temp_length, sizeof(int), 1, file);
     fread(&temp_dino->type, sizeof(char), temp_length, file);
     fread(&thrash, sizeof(char), 1, file);
+    readed_bytes += (temp_length + 5);
 
     fread(&temp_length, sizeof(int), 1, file);
     fread(&temp_dino->diet, sizeof(char), temp_length, file);
     fread(&thrash, sizeof(char), 1, file);
+    readed_bytes += (temp_length + 5);
 
     fread(&temp_length, sizeof(int), 1, file);
     fread(&temp_dino->food, sizeof(char), temp_length, file);
     fread(&thrash, sizeof(char), 1, file);
+    readed_bytes += (temp_length + 5);
+
+    fseek(file, MAX_REGISTER_LEN - readed_bytes, SEEK_CUR);
 }
 
 void writeDinoFile(Dinosaur *temp_species, FILE *file)
@@ -110,37 +166,38 @@ void writeDinoFile(Dinosaur *temp_species, FILE *file)
     fwrite(&temp_length, sizeof(int), 1, file);
     fwrite(temp_species->name, sizeof(char), temp_length, file);
     fwrite(&delimiter, sizeof(char), 1, file);
-    written_bytes += (temp_length + 1);
+    written_bytes += (temp_length + 5);
 
     temp_length = strlen(temp_species->specie_name);
     fwrite(&temp_length, sizeof(int), 1, file);
     fwrite(&temp_species->specie_name, sizeof(char), temp_length, file);
     fwrite(&delimiter, sizeof(char), 1, file);
-    written_bytes += temp_length;
+    written_bytes += (temp_length + 5);
 
     temp_length = strlen(temp_species->habitat);
     fwrite(&temp_length, sizeof(int), 1, file);
     fwrite(&temp_species->habitat, sizeof(char), temp_length, file);
     fwrite(&delimiter, sizeof(char), 1, file);
-    written_bytes += temp_length;
+    written_bytes += (temp_length + 5);
 
     temp_length = strlen(temp_species->type);
     fwrite(&temp_length, sizeof(int), 1, file);
     fwrite(&temp_species->type, sizeof(char), temp_length, file);
     fwrite(&delimiter, sizeof(char), 1, file);
-    written_bytes += temp_length;
+    written_bytes += (temp_length + 5);
 
     temp_length = strlen(temp_species->diet);
     fwrite(&temp_length, sizeof(int), 1, file);
     fwrite(&temp_species->diet, sizeof(char), temp_length, file);
     fwrite(&delimiter, sizeof(char), 1, file);
-    written_bytes += temp_length;
+    written_bytes += (temp_length + 5);
 
+    // remover bytes 10 e 13
     temp_length = strlen(temp_species->food);
     fwrite(&temp_length, sizeof(int), 1, file);
     fwrite(&temp_species->food, sizeof(char), temp_length, file);
     fwrite(&delimiter, sizeof(char), 1, file);
-    written_bytes += temp_length;
+    written_bytes += (temp_length + 5);
 
     // encher com filler
     char filler = '$';

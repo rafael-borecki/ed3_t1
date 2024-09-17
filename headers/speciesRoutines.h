@@ -47,8 +47,8 @@ typedef struct
     char specie_name[MAX_CSV_LEN]; // tem
     char habitat[AVR_STR_LEN];     // tem
     char type[AVR_STR_LEN];        // tem
-    char diet[MIN_STR_LEN];        // tem
-    char food[MIN_STR_LEN];        // não tem //preenche com $
+    char diet[AVR_STR_LEN];        // tem
+    char food[AVR_STR_LEN];        // não tem //preenche com $
 } Dinosaur;
 
 // definição das funções que serão utilizadas no arquivo main.c
@@ -59,6 +59,7 @@ void searchSpeciesRRN(FILE *file);
 void registerInfoSpecies(FILE *file);
 int ReadInput(char *command, char string1[], char string2[], char raw_string[]);
 
+void DebugFile(char filename[]);
 int ReadFromCsv(Dinosaur *temp_dimo, FILE *file);
 void printDino(Dinosaur temp_dino);
 void ReadFromFile(Dinosaur *temp_dino, FILE *file);
