@@ -3,7 +3,7 @@
 ## Tasklist
 [] Descricao geral do trabalho \
 [] Estruturacao das funcoes principais \
-[] Funcionalidade 1 \
+[x] Funcionalidade 1 \
 [] Funcionalidade 2 \
 [] Funcionalidade 3 \
 [] Funcionalidade 4 \
