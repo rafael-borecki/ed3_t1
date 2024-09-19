@@ -3,10 +3,10 @@
 #include <string.h>
 
 #define DEBUG1 1
+#define DEBUG2 0
+#define DEBUG_CSV 0
 
-#define DEBUG2 1
-
-void DebugFile(char filename[])
+void DebugFile(char *filename, Header *head)
 {
     FILE *fp;
     fp = fopen(filename, "rb");
@@ -23,21 +23,19 @@ void DebugFile(char filename[])
         for (int i = 0; i < filelen; i++)
         {
             fread(&buffer, 1, 1, fp);
-            printf("%u ", buffer);
+            printf("%d ", buffer);
         }
     }
+
     if (DEBUG2)
     {
-        fseek(fp, 0, SEEK_SET);
+        fseek(fp, 1600, SEEK_SET);
         Dinosaur temp;
-        ReadFromFile(&temp, fp);
-        printDino(temp);
-        ReadFromFile(&temp, fp);
-        printDino(temp);
-        ReadFromFile(&temp, fp);
-        printDino(temp);
-        ReadFromFile(&temp, fp);
-        printDino(temp);
+        for (int i = 0; i < head->nroPagDisco; i++)
+        {
+            ReadFromFile(&temp, fp);
+            printDino(temp);
+        }
     }
 
     fclose(fp);
@@ -48,46 +46,86 @@ int ReadFromCsv(Dinosaur *temp_dino, FILE *file)
     char line[MAX_CSV_LEN + 1];
     if (fgets(line, MAX_CSV_LEN, file) != NULL)
     {
-        line[strlen(line)] = ',';
-        line[strlen(line) + 1] = '\0';
-
+        if (DEBUG_CSV)
+        {
+            for (int a = 0; a < strlen(line); a++)
+                printf("%d ", line[a]);
+        }
         char *token;
-        token = strtok(line, ",");
-        // name
-        strcpy(temp_dino->name, token);
-        token = strtok(NULL, ",");
-        // diet
-        strcpy(temp_dino->diet, token);
-        token = strtok(NULL, ",");
-        // habitat
-        strcpy(temp_dino->habitat, token);
-        token = strtok(NULL, ",");
-        // população
-        temp_dino->population = atoi(token);
-        token = strtok(NULL, ",");
-        // type
-        strcpy(temp_dino->type, token);
-        token = strtok(NULL, ",");
-        // velocidade
-        temp_dino->velocity = atoi(token);
-        token = strtok(NULL, ",");
-        // unidadeMedida
-        temp_dino->measure_unit = *token;
-        token = strtok(NULL, ",");
-        // tamanho
-        temp_dino->length = atof(token);
-        token = strtok(NULL, ",");
-        // especie
-        strcpy(temp_dino->specie_name, token);
-        token = strtok(NULL, ",");
+        char *point = line;
+        // nome
+        token = strsep(&point, ",");
+        if (*token == '\0' || *token == '\n' || *token == 10)
+            strcpy(temp_dino->name, "");
+        else
+            strcpy(temp_dino->name, token);
 
-        // alimento
-        if (token != NULL)
+        // dieta
+        token = strsep(&point, ",");
+        if (*token == '\0' || *token == '\n' || *token == 10)
+            strcpy(temp_dino->diet, "");
+        else
+            strcpy(temp_dino->diet, token);
+
+        // habitat
+        token = strsep(&point, ",");
+        if (*token == '\0' || *token == '\n' || *token == 10)
+            strcpy(temp_dino->habitat, "");
+        else
+            strcpy(temp_dino->habitat, token);
+
+        // população
+        token = strsep(&point, ",");
+        if (*token == '\0' || *token == '\n' || *token == 10)
+            temp_dino->population = -1;
+        else
+            temp_dino->population = atoi(token);
+
+        // tipo
+        token = strsep(&point, ",");
+        if (*token == '\0' || *token == '\n' || *token == 10)
+            strcpy(temp_dino->type, "");
+        else
+            strcpy(temp_dino->type, token);
+
+        // velocidade
+        token = strsep(&point, ",");
+        if (*token == '\0' || *token == '\n' || *token == 10)
+            temp_dino->velocity = -1;
+        else
+            temp_dino->velocity = atoi(token);
+
+        // unidade de medida
+        token = strsep(&point, ",");
+        if (*token == '\0' || *token == '\n' || *token == 10)
+            temp_dino->measure_unit = '$';
+        else
+            temp_dino->measure_unit = *token;
+
+        // tamanho
+        token = strsep(&point, ",");
+        if (*token == '\0' || *token == '\n' || *token == 10)
+            temp_dino->length = -1;
+        else
+            temp_dino->length = atof(token);
+
+        // espécie
+        token = strsep(&point, ",");
+        if (*token == '\0' || *token == '\n' || *token == 10)
+            strcpy(temp_dino->specie_name, "");
+        else
+            strcpy(temp_dino->specie_name, token);
+
+        // comida
+        token = strsep(&point, "\r");
+        if (*token == '\0' || *token == '\n' || *token == 13)
+            strcpy(temp_dino->food, "");
+        else
             strcpy(temp_dino->food, token);
 
         // campos vazios
         temp_dino->removed = '0';
-        temp_dino->chain = 666;
+        temp_dino->chain = -1;
         return 1;
     }
     return 0;
@@ -109,34 +147,48 @@ void ReadFromFile(Dinosaur *temp_dino, FILE *file)
 
     // dados variados
     int temp_length;
+    char temp_string[100];
     char thrash;
+
     fread(&temp_length, sizeof(int), 1, file);
-    fread(&temp_dino->name, sizeof(char), temp_length, file);
+    fread(&temp_string, sizeof(char), temp_length, file);
+    temp_string[temp_length] = '\0';
+    strcpy(temp_dino->name, temp_string);
     fread(&thrash, sizeof(char), 1, file);
     readed_bytes += (temp_length + 5);
 
     fread(&temp_length, sizeof(int), 1, file);
-    fread(&temp_dino->specie_name, sizeof(char), temp_length, file);
+    fread(&temp_string, sizeof(char), temp_length, file);
+    temp_string[temp_length] = '\0';
+    strcpy(temp_dino->specie_name, temp_string);
     fread(&thrash, sizeof(char), 1, file);
     readed_bytes += (temp_length + 5);
 
     fread(&temp_length, sizeof(int), 1, file);
-    fread(&temp_dino->habitat, sizeof(char), temp_length, file);
+    fread(&temp_string, sizeof(char), temp_length, file);
+    temp_string[temp_length] = '\0';
+    strcpy(temp_dino->habitat, temp_string);
     fread(&thrash, sizeof(char), 1, file);
     readed_bytes += (temp_length + 5);
 
     fread(&temp_length, sizeof(int), 1, file);
-    fread(&temp_dino->type, sizeof(char), temp_length, file);
+    fread(&temp_string, sizeof(char), temp_length, file);
+    temp_string[temp_length] = '\0';
+    strcpy(temp_dino->type, temp_string);
     fread(&thrash, sizeof(char), 1, file);
     readed_bytes += (temp_length + 5);
 
     fread(&temp_length, sizeof(int), 1, file);
-    fread(&temp_dino->diet, sizeof(char), temp_length, file);
+    fread(&temp_string, sizeof(char), temp_length, file);
+    temp_string[temp_length] = '\0';
+    strcpy(temp_dino->diet, temp_string);
     fread(&thrash, sizeof(char), 1, file);
     readed_bytes += (temp_length + 5);
 
     fread(&temp_length, sizeof(int), 1, file);
-    fread(&temp_dino->food, sizeof(char), temp_length, file);
+    fread(&temp_string, sizeof(char), temp_length, file);
+    temp_string[temp_length] = '\0';
+    strcpy(temp_dino->food, temp_string);
     fread(&thrash, sizeof(char), 1, file);
     readed_bytes += (temp_length + 5);
 
@@ -148,6 +200,7 @@ void writeDinoFile(Dinosaur *temp_species, FILE *file)
     int written_bytes = 0;
 
     // registros de tamanho fixo
+    // tratamento para os casos onde o campo é nulo
     fwrite(&temp_species->removed, sizeof(char), 1, file);
     fwrite(&temp_species->chain, sizeof(int), 1, file);
     fwrite(&temp_species->population, sizeof(int), 1, file);
@@ -159,46 +212,94 @@ void writeDinoFile(Dinosaur *temp_species, FILE *file)
     written_bytes += 18;
 
     // registros de tamanho variável
+    // se é nulo -> apenas um hashtag
     int temp_length = 0;
     char delimiter = '#';
 
+    /*
+     * DA PRA TIRAR OS IF's E ELSES,
+     */
+
+    // nome
     temp_length = strlen(temp_species->name);
-    fwrite(&temp_length, sizeof(int), 1, file);
-    fwrite(temp_species->name, sizeof(char), temp_length, file);
-    fwrite(&delimiter, sizeof(char), 1, file);
-    written_bytes += (temp_length + 5);
+    if (temp_length == 0)
+    {
+        fwrite(&delimiter, sizeof(char), 1, file);
+        written_bytes += 1;
+    }
+    else
+    {
+        fwrite(temp_species->name, sizeof(char), temp_length, file);
+        fwrite(&delimiter, sizeof(char), 1, file);
+        written_bytes += (temp_length + 1);
+    }
 
+    // specie_name
     temp_length = strlen(temp_species->specie_name);
-    fwrite(&temp_length, sizeof(int), 1, file);
-    fwrite(&temp_species->specie_name, sizeof(char), temp_length, file);
-    fwrite(&delimiter, sizeof(char), 1, file);
-    written_bytes += (temp_length + 5);
+    if (temp_species == 0)
+    {
+        fwrite(&delimiter, sizeof(char), 1, file);
+        written_bytes += 1;
+    }
+    else
+    {
+        fwrite(&temp_species->specie_name, sizeof(char), temp_length, file);
+        fwrite(&delimiter, sizeof(char), 1, file);
+        written_bytes += (temp_length + 1);
+    }
 
+    // habitat
     temp_length = strlen(temp_species->habitat);
-    fwrite(&temp_length, sizeof(int), 1, file);
-    fwrite(&temp_species->habitat, sizeof(char), temp_length, file);
-    fwrite(&delimiter, sizeof(char), 1, file);
-    written_bytes += (temp_length + 5);
-
+    if (temp_length == 0)
+    {
+        fwrite(&delimiter, sizeof(char), 1, file);
+        written_bytes += 1;
+    }
+    else
+    {
+        fwrite(&temp_species->habitat, sizeof(char), temp_length, file);
+        fwrite(&delimiter, sizeof(char), 1, file);
+        written_bytes += (temp_length + 1);
+    }
+    // type
     temp_length = strlen(temp_species->type);
-    fwrite(&temp_length, sizeof(int), 1, file);
-    fwrite(&temp_species->type, sizeof(char), temp_length, file);
-    fwrite(&delimiter, sizeof(char), 1, file);
-    written_bytes += (temp_length + 5);
-
+    if (temp_length == 0)
+    {
+        fwrite(&delimiter, sizeof(char), 1, file);
+        written_bytes += 1;
+    }
+    else
+    {
+        fwrite(&temp_species->type, sizeof(char), temp_length, file);
+        fwrite(&delimiter, sizeof(char), 1, file);
+        written_bytes += (temp_length + 1);
+    }
+    // diet
     temp_length = strlen(temp_species->diet);
-    fwrite(&temp_length, sizeof(int), 1, file);
-    fwrite(&temp_species->diet, sizeof(char), temp_length, file);
-    fwrite(&delimiter, sizeof(char), 1, file);
-    written_bytes += (temp_length + 5);
+    if (temp_length == 0)
+    {
+        fwrite(&delimiter, sizeof(char), 1, file);
+        written_bytes += 1;
+    }
+    else
+    {
+        fwrite(&temp_species->diet, sizeof(char), temp_length, file);
+        fwrite(&delimiter, sizeof(char), 1, file);
+        written_bytes += (temp_length + 1);
+    }
 
-    // remover bytes 10 e 13
     temp_length = strlen(temp_species->food);
-    fwrite(&temp_length, sizeof(int), 1, file);
-    fwrite(&temp_species->food, sizeof(char), temp_length, file);
-    fwrite(&delimiter, sizeof(char), 1, file);
-    written_bytes += (temp_length + 5);
-
+    if (temp_length == 0)
+    {
+        fwrite(&delimiter, sizeof(char), 1, file);
+        written_bytes += 1;
+    }
+    else
+    {
+        fwrite(&temp_species->food, sizeof(char), temp_length, file);
+        fwrite(&delimiter, sizeof(char), 1, file);
+        written_bytes += (temp_length + 1);
+    }
     // encher com filler
     char filler = '$';
     for (int i = 0; i < MAX_REGISTER_LEN - written_bytes; i++)
@@ -345,7 +446,7 @@ int ReadInput(char *command, char string1[], char string2[], char raw_string[])
         string2[i - position1 - 1] = raw_string[i];
     string2[position2 - position1 - 1] = '\0';
 
-    if (DEBUG)
+    if (DEBUG1)
         printf("%d %d %c %s %s %ld %ld\n", position1, position2, *command, string1, string2,
                strlen(string1), strlen(string2));
 
