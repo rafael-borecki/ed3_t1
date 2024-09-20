@@ -1,6 +1,7 @@
 #ifndef __SPECIES_ROUTINES__
 #define __SPECIES_ROUTINES__
 
+#include "headerRoutines.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,16 +21,6 @@
 #define MIN_STR_LEN 20
 
 #define MAX_CSV_LEN 160
-
-typedef struct
-{
-    char status;
-    int topo;
-    int proxRRN;
-    int nroRegRem;
-    int nroPagDisco;
-    int qttCompacta;
-} header;
 
 // inicialização da struct Species
 typedef struct
@@ -59,7 +50,7 @@ void searchSpeciesRRN(FILE *file);
 void registerInfoSpecies(FILE *file);
 int ReadInput(char *command, char string1[], char string2[], char raw_string[]);
 
-void DebugFile(char filename[]);
+void DebugFile(char filename[], Header *head);
 int ReadFromCsv(Dinosaur *temp_dimo, FILE *file);
 void printDino(Dinosaur temp_dino);
 void ReadFromFile(Dinosaur *temp_dino, FILE *file);
