@@ -138,6 +138,12 @@ void ReadFromFile(Dinosaur *temp_dino, FILE *file)
     int readed_bytes = 0;
 
     fread(&temp_dino->removed, sizeof(char), 1, file);
+    if (temp_dino->removed == '1')
+    {
+        fseek(file, 159, SEEK_CUR);
+        return;
+    }
+
     fread(&temp_dino->chain, sizeof(int), 1, file);
     fread(&temp_dino->population, sizeof(int), 1, file);
     fread(&temp_dino->length, sizeof(float), 1, file);
@@ -353,13 +359,21 @@ void printDino(Dinosaur temp_dino)
         printf("removed: %c\n", temp_dino.removed);
         printf("chain: %d\n", temp_dino.chain);
     }
-    printf("Nome: %s\n", temp_dino.name);
-    printf("Espécie: %s\n", temp_dino.specie_name);
-    printf("Tipo: %s\n", temp_dino.type);
-    printf("Dieta: %s\n", temp_dino.diet);
-    printf("Lugar que habitava: %s\n", temp_dino.habitat);
-    printf("Tamanho: %.1f m\n", temp_dino.length);
-    printf("velocity: %d %cm/h\n\n", temp_dino.velocity, temp_dino.measure_unit);
+    if (strcmp(temp_dino.name, ""))
+        printf("Nome: %s\n", temp_dino.name);
+    if (strcmp(temp_dino.specie_name, ""))
+        printf("Especie: %s\n", temp_dino.specie_name);
+    if (strcmp(temp_dino.type, ""))
+        printf("Tipo: %s\n", temp_dino.type);
+    if (strcmp(temp_dino.diet, ""))
+        printf("Dieta: %s\n", temp_dino.diet);
+    if (strcmp(temp_dino.habitat, ""))
+        printf("Lugar que habitava: %s\n", temp_dino.habitat);
+    if (temp_dino.length != -1)
+        printf("Tamanho: %.1f m\n", temp_dino.length);
+    if (temp_dino.velocity != -1)
+        printf("Velocidade: %d %cm/h\n", temp_dino.velocity, temp_dino.measure_unit);
+    printf("\n");
     if (DEBUG_PRINT)
     {
         printf("population: %d\n", temp_dino.population);

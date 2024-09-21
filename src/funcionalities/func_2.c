@@ -32,18 +32,18 @@ int funcionality2(char inputFileName[])
     // verifica se está removido ou não
     //
     // printa Dino
-    printf("%d", head.proxRRN);
 
     Dinosaur temp_dino;
     for (int i = 0; i < head.proxRRN; i++)
     {
         ReadFromFile(&temp_dino, file_in);
-        printDino(temp_dino);
+        if (temp_dino.removed == '0')
+            printDino(temp_dino);
     }
 
     fclose(file_in);
 
-    printf("Número de páginas de disco: %d\n\n", head.nroPagDisco);
+    printf("Numero de paginas de disco: %d\n\n", head.nroPagDisco);
 
     return 1;
 }
