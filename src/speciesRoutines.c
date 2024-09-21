@@ -2,9 +2,10 @@
 #include <stdio.h>
 #include <string.h>
 
-#define DEBUG1 1
+#define DEBUG1 0
 #define DEBUG2 0
 #define DEBUG_CSV 0
+#define DEBUG_PRINT 0
 
 void DebugFile(char *filename, Header *head)
 {
@@ -146,53 +147,48 @@ void ReadFromFile(Dinosaur *temp_dino, FILE *file)
     readed_bytes += 18;
 
     // dados variados
-    int temp_length;
-    char temp_string[100];
-    char thrash;
+    char buffer[161];
+    char *pointer_buffer = buffer;
+    fread(buffer, sizeof(char), 142, file);
 
-    fread(&temp_length, sizeof(int), 1, file);
-    fread(&temp_string, sizeof(char), temp_length, file);
-    temp_string[temp_length] = '\0';
-    strcpy(temp_dino->name, temp_string);
-    fread(&thrash, sizeof(char), 1, file);
-    readed_bytes += (temp_length + 5);
+    // printf("%s %ld\n", buffer, strlen(buffer));
+    // char temp_buffer[100];
+    char *token;
+    token = strsep(&pointer_buffer, "#");
+    if (*token == '\0' || *token == '\n' || *token == 10)
+        strcpy(temp_dino->name, "");
+    else
+        strcpy(temp_dino->name, token);
 
-    fread(&temp_length, sizeof(int), 1, file);
-    fread(&temp_string, sizeof(char), temp_length, file);
-    temp_string[temp_length] = '\0';
-    strcpy(temp_dino->specie_name, temp_string);
-    fread(&thrash, sizeof(char), 1, file);
-    readed_bytes += (temp_length + 5);
+    token = strsep(&pointer_buffer, "#");
+    if (*token == '\0' || *token == '\n' || *token == 10)
+        strcpy(temp_dino->specie_name, "");
+    else
+        strcpy(temp_dino->specie_name, token);
 
-    fread(&temp_length, sizeof(int), 1, file);
-    fread(&temp_string, sizeof(char), temp_length, file);
-    temp_string[temp_length] = '\0';
-    strcpy(temp_dino->habitat, temp_string);
-    fread(&thrash, sizeof(char), 1, file);
-    readed_bytes += (temp_length + 5);
+    token = strsep(&pointer_buffer, "#");
+    if (*token == '\0' || *token == '\n' || *token == 10)
+        strcpy(temp_dino->habitat, "");
+    else
+        strcpy(temp_dino->habitat, token);
 
-    fread(&temp_length, sizeof(int), 1, file);
-    fread(&temp_string, sizeof(char), temp_length, file);
-    temp_string[temp_length] = '\0';
-    strcpy(temp_dino->type, temp_string);
-    fread(&thrash, sizeof(char), 1, file);
-    readed_bytes += (temp_length + 5);
+    token = strsep(&pointer_buffer, "#");
+    if (*token == '\0' || *token == '\n' || *token == 10)
+        strcpy(temp_dino->type, "");
+    else
+        strcpy(temp_dino->type, token);
+    token = strsep(&pointer_buffer, "#");
 
-    fread(&temp_length, sizeof(int), 1, file);
-    fread(&temp_string, sizeof(char), temp_length, file);
-    temp_string[temp_length] = '\0';
-    strcpy(temp_dino->diet, temp_string);
-    fread(&thrash, sizeof(char), 1, file);
-    readed_bytes += (temp_length + 5);
+    if (*token == '\0' || *token == '\n' || *token == 10)
+        strcpy(temp_dino->diet, "");
+    else
+        strcpy(temp_dino->diet, token);
 
-    fread(&temp_length, sizeof(int), 1, file);
-    fread(&temp_string, sizeof(char), temp_length, file);
-    temp_string[temp_length] = '\0';
-    strcpy(temp_dino->food, temp_string);
-    fread(&thrash, sizeof(char), 1, file);
-    readed_bytes += (temp_length + 5);
-
-    fseek(file, MAX_REGISTER_LEN - readed_bytes, SEEK_CUR);
+    token = strsep(&pointer_buffer, "#");
+    if (*token == '\0' || *token == '\n' || *token == 10)
+        strcpy(temp_dino->food, "");
+    else
+        strcpy(temp_dino->food, token);
 }
 
 void writeDinoFile(Dinosaur *temp_species, FILE *file)
@@ -348,9 +344,11 @@ int searchSpecies(char *filename, int ID)
     return 0;
 }*/
 
+// FAZER TRATAMENTO PARA CAMPOS NULOS
+
 void printDino(Dinosaur temp_dino)
 {
-    if (DEBUG)
+    if (DEBUG_PRINT)
     {
         printf("removed: %c\n", temp_dino.removed);
         printf("chain: %d\n", temp_dino.chain);
@@ -360,16 +358,14 @@ void printDino(Dinosaur temp_dino)
     printf("Tipo: %s\n", temp_dino.type);
     printf("Dieta: %s\n", temp_dino.diet);
     printf("Lugar que habitava: %s\n", temp_dino.habitat);
-    printf("Tamanho: %.2f m\n", temp_dino.length);
-    printf("velocity: %d km/h\n", temp_dino.velocity);
-    printf("population: %d\n", temp_dino.population);
-    if (DEBUG)
+    printf("Tamanho: %.1f m\n", temp_dino.length);
+    printf("velocity: %d %cm/h\n\n", temp_dino.velocity, temp_dino.measure_unit);
+    if (DEBUG_PRINT)
     {
-        printf("measure_unit: %c\n", temp_dino.measure_unit);
+        printf("population: %d\n", temp_dino.population);
+
         printf("food: %s\n\n", temp_dino.food);
     }
-    printf("\n");
-    // printa numero de páginas em branco
 }
 int ReadInput(char *command, char string1[], char string2[], char raw_string[])
 {
@@ -442,13 +438,16 @@ int ReadInput(char *command, char string1[], char string2[], char raw_string[])
         string1[i - 2] = raw_string[i];
     string1[position1 - 2] = '\0';
 
-    for (int i = position1 + 1; i < position2; i++)
-        string2[i - position1 - 1] = raw_string[i];
-    string2[position2 - position1 - 1] = '\0';
+    if (second_input_flag)
+    {
+        for (int i = position1 + 1; i < position2; i++)
+            string2[i - position1 - 1] = raw_string[i];
+        string2[position2 - position1 - 1] = '\0';
+    }
 
     if (DEBUG1)
-        printf("%d %d %c %s %s %ld %ld\n", position1, position2, *command, string1, string2,
-               strlen(string1), strlen(string2));
+        printf("%d %d %c %d %s %s %ld %ld\n", position1, position2, *command, second_input_flag,
+               string1, string2, strlen(string1), strlen(string2));
 
     return 1;
 }
@@ -528,8 +527,8 @@ void searchSpeciesRRN(FILE *file)
 
     long long int jump_size = sizeof(temp_species.species_id) + sizeof(temp_species.name) +
                               sizeof(temp_species.scientific_name) +
-                              sizeof(temp_species.population) + sizeof(temp_species.status) +
-                              sizeof(temp_species.location) + sizeof(temp_species.human_impact);
+                              sizeof(temp_species.population) + sizeof(temp_species.status)
++ sizeof(temp_species.location) + sizeof(temp_species.human_impact);
 
     fseek(file, 0, SEEK_END);
     long long int max_jump = ftell(file) / jump_size;

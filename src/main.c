@@ -8,7 +8,12 @@
  * Renan Correia Monteiro Soares - 14605661
  */
 
-#include "../headers/funcionalities.h"
+#include "../headers/func_1.h"
+#include "../headers/func_2.h"
+//#include "../headers/func_.h"
+//#include "../headers/func_.h"
+//#include "../headers/func_.h"
+//#include "../headers/func_.h"
 #include "../headers/funcoesFornecidas.h"
 #include "../headers/speciesRoutines.h"
 
@@ -27,25 +32,11 @@ int main()
         break;
     }
 
-    case (2): {
-    /*FILE *file = fopen(filename, "rb");
-    if (!file)
-    {
-        printf("Falha no processamento do arquivo");
-        return 0;
+    case ('2'): {
+        funcionality2(input1);
+        // printf("%s", input1);
+        break;
     }
-
-    fseek(file, 0, SEEK_END);
-    long int file_end = ftell(file);
-    fseek(file, 0, SEEK_SET);
-
-    while (file_end - ftell(file) > 130) // enquanto houver registro a ser lido
-    {
-        reportSpecies(file);
-    }
-    fclose(file);
-    break;
-}*/
     case (3): { /*
      FILE *file = fopen(filename, "rb");
      if (!file)
@@ -84,10 +75,9 @@ int main()
 
         return 0;
     }
-        return 0;
-    }
     return 0;
 }
+
 /*
             =======
          * Primeiro Trabalho Prático

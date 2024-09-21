@@ -1,23 +1,49 @@
-/*#include "funcoesFornecidas.h"
-#include "speciesRoutines.h"
+#include "../../headers/func_2.h"
 #include <stdio.h>
-#include <stdlib.h>
 
 int funcionality2(char inputFileName[])
 {
+
     FILE *file_in;
-    file_in = fopen(inputFileName, "r");
+    file_in = fopen(inputFileName, "rb");
     if (!file_in)
     {
         printf("Falha no processamento do arquivo\n");
         return EXIT_FAILURE;
     }
 
-    // enquanto der para ler
-    Dinosaur dino;
-    // read from binary
-    // input dino on screen
+    // lê o cabeçalho
+    Header head;
+    if (readHeader(&head, file_in) == 0)
+    {
+        printf("Registro inexistente.\n");
+        return 0;
+    };
+
+    // se status = 0, deu ruim
+    // se status = 1, deu bom
+    if (head.status == '0')
+    {
+        printf("Falha no processamento do arquivo");
+        return 0;
+    }
+    // loop
     //
+    // verifica se está removido ou não
+    //
+    // printa Dino
+    printf("%d", head.proxRRN);
+
+    Dinosaur temp_dino;
+    for (int i = 0; i < head.proxRRN; i++)
+    {
+        ReadFromFile(&temp_dino, file_in);
+        printDino(temp_dino);
+    }
+
+    fclose(file_in);
+
+    printf("Número de páginas de disco: %d\n\n", head.nroPagDisco);
+
     return 1;
 }
-*/

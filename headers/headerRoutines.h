@@ -16,5 +16,6 @@ typedef struct
 
 int createHeader(Header *head, FILE *file);
 int updateHeader(Header *head, FILE *file);
+int readHeader(Header *head, FILE *file);
 
 #endif
