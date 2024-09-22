@@ -5,7 +5,7 @@
 [] Estruturacao das funcoes principais \
 [x] Funcionalidade 1 \
 [x] Funcionalidade 2 \
-[] Funcionalidade 3 \
+[x] Funcionalidade 3 \
 [] Funcionalidade 4 \
 [] Funcionalidade 5 \
 [] Funcionalidade 6 \
