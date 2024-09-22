@@ -11,7 +11,7 @@
 #include "../headers/func_1.h"
 #include "../headers/func_2.h"
 #include "../headers/func_3.h"
-//#include "../headers/func_.h"
+#include "../headers/func_4.h"
 //#include "../headers/func_.h"
 //#include "../headers/func_.h"
 #include "../headers/funcoes_fornecidas.h"
@@ -45,29 +45,10 @@ int main()
         funcionality3(input1, input2, input3);
         break;
     }
-    case (4): { /*
-         FILE *file = fopen(filename, "rb+");
-         if (!file)
-         {
-             printf("Falha no processamento do arquivo");
-             return EXIT_FAILURE;
-         }
-         registerInfoSpecies(file);
-         fclose(file);
-
-         file = fopen(filename, "rb");
-         if (!file)
-         {
-             printf("Falha no processamento do arquivo");
-             return EXIT_FAILURE;
-         }
-         binarioNaTela(filename);
-         fclose(file);
-         break;
-     */
+    case ('4'): {
+        funcionality4(input1, input2, input3);
+        break;
     }
-
-        return 0;
     }
     return 0;
 }

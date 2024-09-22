@@ -323,6 +323,7 @@ int compareDino(char *field, char *value, Dinosaur *temp_dino)
         return (temp_dino->measure_unit == value[0]) ? 1 : 0;
     if (!strcmp("velocidade", field))
         return (temp_dino->velocity == atoi(value)) ? 1 : 0;
+
     // tamanho variável
     if (!strcmp("nome", field))
         return (!strcmp(temp_dino->name, value)) ? 1 : 0;
@@ -369,6 +370,29 @@ void printDino(Dinosaur temp_dino)
 
         printf("food: %s\n\n", temp_dino.food);
     }
+}
+
+// baseado no RRN, faz a remoção lógica do registro
+int removeDinoRRN(int i, FILE *file, Header *head)
+{
+    int save = ftell(file);
+    fseek(file, 1600, SEEK_SET);
+    fseek(file, i * 160, SEEK_CUR);
+
+    // alteração do arquivo binário
+    char removed = '1';
+    char thrash[155];
+    memset(thrash, '$', 155 * sizeof(char));
+    fwrite(&removed, sizeof(char), 1, file);
+    fwrite(&head->topo, sizeof(int), 1, file);
+    fwrite(thrash, sizeof(unsigned char), 155, file);
+
+    // aleteração do header
+    head->topo = i;
+    head->nroRegRem += 1;
+
+    fseek(file, save, SEEK_SET);
+    return 1;
 }
 /*
  registerSpecies (COMANDO 1)

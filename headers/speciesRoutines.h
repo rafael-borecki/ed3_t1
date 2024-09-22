@@ -48,4 +48,5 @@ void printDino(Dinosaur temp_dino);
 void ReadFromFile(Dinosaur *temp_dino, FILE *file);
 void writeDinoFile(Dinosaur *temp_species, FILE *file);
 int compareDino(char *field, char *value, Dinosaur *temp_dino);
+int removeDinoRRN(int i, FILE *file, Header *head);
 #endif
