@@ -307,48 +307,37 @@ void writeDinoFile(Dinosaur *temp_species, FILE *file)
     for (int i = 0; i < MAX_REGISTER_LEN - written_bytes; i++)
         fwrite(&filler, sizeof(char), 1, file);
 }
-/*
-searchSpecies **Procura no arquivo "filename" algum registro com o mesmo ID passado no argumento da
-    função **Se achar um registro com ID igual,
-    retorna 1 * Se não, retorna 0;
 
-int searchSpecies(char *filename, int ID)
+// searchSpecies **Procura no arquivo "filename" algum registro com o mesmo ID passado no argumento
+// da
+//    função **Se achar um registro com ID igual,
+//    retorna 1 * Se não, retorna 0;
+
+int compareDino(char *field, char *value, Dinosaur *temp_dino)
 {
-    // abertura do arquivo para leitura
-    FILE *file = fopen(filename, "rb");
-    if (!file)
-    {
-        return 0;
-    }
-
-    fseek(file, 0, SEEK_END);
-    long int file_end = ftell(file); // byteoffset do fim do arquivo
-
-    fseek(file, 0, SEEK_SET);
-    int temp;
-
-    // determinando o tamanho, em bytes, de um registro
-    Species temp_species;
-    long long int jump_size = sizeof(temp_species.species_id) + sizeof(temp_species.name) +
-                              sizeof(temp_species.scientific_name) +
-                              sizeof(temp_species.population) + sizeof(temp_species.status) +
-                              sizeof(temp_species.location) + sizeof(temp_species.human_impact);
-
-    while (file_end - ftell(file) > 130) // enquanto houver registro
-    {
-        fread(&temp, sizeof(int), 1, file); // le os 4 primeiros bytes (1 int)
-        if (temp == ID)
-        {
-            return 1;
-        }
-        fseek(file, -4, SEEK_CUR);        // retorna 4 bytes
-        fseek(file, jump_size, SEEK_CUR); // pula para o próximo registro
-    }
-
-    fclose(file);
-
+    if (!strcmp("populacao", field))
+        return (temp_dino->population == atoi(value)) ? 1 : 0;
+    if (!strcmp("tamanho", field))
+        return (temp_dino->length == atof(value)) ? 1 : 0;
+    if (!strcmp("unidadeMedida", field))
+        return (temp_dino->measure_unit == value[0]) ? 1 : 0;
+    if (!strcmp("velocidade", field))
+        return (temp_dino->velocity == atoi(value)) ? 1 : 0;
+    // tamanho variável
+    if (!strcmp("nome", field))
+        return (!strcmp(temp_dino->name, value)) ? 1 : 0;
+    if (!strcmp("especie", field))
+        return (!strcmp(temp_dino->specie_name, value)) ? 1 : 0;
+    if (!strcmp("habitat", field))
+        return (!strcmp(temp_dino->habitat, value)) ? 1 : 0;
+    if (!strcmp("tipo", field))
+        return (!strcmp(temp_dino->type, value)) ? 1 : 0;
+    if (!strcmp("dieta", field))
+        return (!strcmp(temp_dino->diet, value)) ? 1 : 0;
+    if (!strcmp("alimento", field))
+        return (!strcmp(temp_dino->food, value)) ? 1 : 0;
     return 0;
-}*/
+}
 
 // FAZER TRATAMENTO PARA CAMPOS NULOS
 
@@ -381,91 +370,6 @@ void printDino(Dinosaur temp_dino)
         printf("food: %s\n\n", temp_dino.food);
     }
 }
-int ReadInput(char *command, char string1[], char string2[], char raw_string[])
-{
-    fgets(raw_string, MAX_STR_LEN, stdin);
-
-    // verifica primeiro caractere
-    *command = raw_string[0];
-    if (*command < '1' || *command > '6')
-    {
-        printf("Falha no processamento do arquivo\n");
-        return 0;
-    }
-
-    // verifica segundo caractere
-    if (raw_string[1] != ' ')
-    {
-        printf("Falha no processamento do arquivo");
-        return 0;
-    }
-
-    // procura o primeiro e segundo <ESPAÇO> ou caractere especial
-    int position1;
-    int position2;
-    int second_input_flag = 0; // indica se tem uma segunda entrada
-
-    // procur o primeiro <ESPAÇO> ou caractere especial
-    for (int i = 2; i < MAX_STR_LEN - 2; i++)
-    {
-        if (raw_string[i] == ' ')
-        {
-            position1 = i;
-            second_input_flag = 1;
-            break;
-        }
-        if (raw_string[i] < 32 || raw_string[i] > 126)
-        {
-            position1 = i;
-            second_input_flag = 0;
-            break;
-        }
-    }
-
-    // procura o segundo <ESPAÇO> ou caractere especial
-    for (int i = position1 + 1; i < MAX_STR_LEN; i++)
-    {
-        if (raw_string[i] == ' ')
-        {
-            printf("Falha no processamento do arquivo\n");
-            return 0;
-        }
-        if (raw_string[i] < 32 || raw_string[i] > 126)
-        {
-            position2 = i;
-            break;
-        }
-    }
-
-    if ((*command == '1' && second_input_flag == 0) ||
-        (*command == '2' && second_input_flag == 1) ||
-        (*command == '3' && second_input_flag == 0) ||
-        (*command == '4' && second_input_flag == 0) ||
-        (*command == '5' && second_input_flag == 0) || (*command == '6' && second_input_flag == 1))
-    {
-        printf("Erro no processamento do arquivo\n");
-        return 0;
-    }
-
-    // copiando as strings para as variaveis
-    for (int i = 2; i < position1; i++)
-        string1[i - 2] = raw_string[i];
-    string1[position1 - 2] = '\0';
-
-    if (second_input_flag)
-    {
-        for (int i = position1 + 1; i < position2; i++)
-            string2[i - position1 - 1] = raw_string[i];
-        string2[position2 - position1 - 1] = '\0';
-    }
-
-    if (DEBUG1)
-        printf("%d %d %c %d %s %s %ld %ld\n", position1, position2, *command, second_input_flag,
-               string1, string2, strlen(string1), strlen(string2));
-
-    return 1;
-}
-
 /*
  registerSpecies (COMANDO 1)
  *

@@ -10,46 +10,40 @@
 
 #include "../headers/func_1.h"
 #include "../headers/func_2.h"
+#include "../headers/func_3.h"
 //#include "../headers/func_.h"
 //#include "../headers/func_.h"
 //#include "../headers/func_.h"
-//#include "../headers/func_.h"
-#include "../headers/funcoesFornecidas.h"
+#include "../headers/funcoes_fornecidas.h"
+#include "../headers/readInput.h"
 #include "../headers/speciesRoutines.h"
 
 int main()
 {
+    /* command = 1 char
+     * input1 = primeira string
+     * input2 = 2 string
+     * input3 = resto da primeira string
+     */
     char inputstr[MAX_STR_LEN];
-    char command, input1[MAX_STR_LEN], input2[MAX_STR_LEN];
+    char command, input1[MAX_STR_LEN], input2[MAX_STR_LEN], input3[MAX_STR_LEN];
 
-    ReadInput(&command, input1, input2, inputstr);
-    setbuf(stdin, NULL);
+    ReadInput(&command, input1, input2, input3, inputstr);
 
-    switch (command)
+    switch (input1[0])
     {
     case ('1'): {
-        funcionality1(input1, input2);
+        funcionality1(input2, input3);
         break;
     }
 
     case ('2'): {
-        funcionality2(input1);
-        // printf("%s", input1);
+        funcionality2(input2);
         break;
     }
-    case (3): { /*
-     FILE *file = fopen(filename, "rb");
-     if (!file)
-     {
-         printf("Falha no processamento do arquivo");
-         return EXIT_FAILURE;
-     }
-
-     searchSpeciesRRN(file);
-
-     fclose(file);
-     break;
- */
+    case ('3'): {
+        funcionality3(input1, input2, input3);
+        break;
     }
     case (4): { /*
          FILE *file = fopen(filename, "rb+");

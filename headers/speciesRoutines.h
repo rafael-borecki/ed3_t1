@@ -8,14 +8,7 @@
 #include <string.h>
 
 // Inicializaçao dos macros para a execução do programa
-#define DEBUG 1
-#define NAME_SIZE 41
-#define SCIENTIFIC_SIZE 61
-#define STATUS_SIZE 9
-#define FILLER '$'
-
 #define MAX_REGISTER_LEN 160
-
 #define MAX_STR_LEN 300
 #define AVR_STR_LEN 100
 #define MIN_STR_LEN 20
@@ -48,11 +41,11 @@ void reportSpecies(FILE *file);
 int searchSpecies(char *filename, int ID);
 void searchSpeciesRRN(FILE *file);
 void registerInfoSpecies(FILE *file);
-int ReadInput(char *command, char string1[], char string2[], char raw_string[]);
 
 void DebugFile(char filename[], Header *head);
 int ReadFromCsv(Dinosaur *temp_dimo, FILE *file);
 void printDino(Dinosaur temp_dino);
 void ReadFromFile(Dinosaur *temp_dino, FILE *file);
 void writeDinoFile(Dinosaur *temp_species, FILE *file);
+int compareDino(char *field, char *value, Dinosaur *temp_dino);
 #endif

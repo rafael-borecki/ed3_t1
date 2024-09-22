@@ -1,10 +1,12 @@
 #ifndef __FUNCOES_FORNECIDAS__
 #define __FUNCOES_FORNECIDAS__
 
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-void readline(char *string);
+void scan_quote_string(char *str);
 
 /**
  * Use essa função para comparação no run.codes.

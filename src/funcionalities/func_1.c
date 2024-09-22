@@ -1,7 +1,5 @@
 
 #include "./../../headers/func_1.h"
-#include "./../../headers/funcoesFornecidas.h"
-#include "./../../headers/headerRoutines.h"
 
 #define DEBUG_FUNC1_PRINT 0
 #define DEBUG_FUNC1_FILE 0

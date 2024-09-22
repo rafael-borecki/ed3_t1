@@ -2,6 +2,7 @@
 #define __FUNC_1__
 
 #include "./speciesRoutines.h"
+#include "funcoes_fornecidas.h"
 #include <stdio.h>
 #include <stdlib.h>
 int funcionality1(char inputFileName[], char outputFileName[]);
