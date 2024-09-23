@@ -53,5 +53,6 @@ int removeDinoRRN(int i, FILE *file, Header *head);
 void readFromInput(Dinosaur *temp_dino);
 void writeDinoRRN(int RRN, FILE *file, Dinosaur *temp_dino);
 int searchNextChain(int RRN, FILE *file, Dinosaur *temp_dino);
-
+int isDinoRemovedRRN(int RRN, FILE *file);
+int copyDinoRRN(int i, int j, FILE *file);
 #endif

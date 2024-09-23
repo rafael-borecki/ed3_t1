@@ -2,7 +2,7 @@
 
 #define DEBUG 0
 
-int ReadInput(char *command, char string1[], char string2[], char string3[], char raw_string[])
+int ReadInput(char string1[], char string2[], char string3[])
 {
     scanf("%s", string1);
     switch (string1[0])

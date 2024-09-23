@@ -1,5 +1,6 @@
 #include "./../headers/speciesRoutines.h"
 #include <stdio.h>
+#include <sys/types.h>
 
 #define DEBUG1 0
 #define DEBUG2 0
@@ -133,6 +134,7 @@ int ReadFromCsv(Dinosaur *temp_dino, FILE *file)
 
 void ReadFromFile(Dinosaur *temp_dino, FILE *file)
 {
+
     // dados fixos
     int readed_bytes = 0;
 
@@ -497,189 +499,42 @@ int searchNextChain(int RRN, FILE *file, Dinosaur *temp_dino)
     fseek(file, save, SEEK_SET);
     return proxRRN;
 }
-/*
- searchSpeciesRRN (COMANDO 3)
- *
- * Dado um RRN, procura o registro que ocupa o RRN passado.
- *
- * Caso o RRN seja invalido, o procedimento é encerrado.
 
-void searchSpeciesRRN(FILE *file)
+int isDinoRemovedRRN(int RRN, FILE *file)
 {
-    Species temp_species;
-
-    int rrn;
-    scanf("%d", &rrn);
-
-    long long int jump_size = sizeof(temp_species.species_id) + sizeof(temp_species.name) +
-                              sizeof(temp_species.scientific_name) +
-                              sizeof(temp_species.population) + sizeof(temp_species.status)
-+ sizeof(temp_species.location) + sizeof(temp_species.human_impact);
-
+    int save = ftell(file);
     fseek(file, 0, SEEK_END);
-    long long int max_jump = ftell(file) / jump_size;
-    fseek(file, 0, SEEK_SET);
+    int max = ftell(file);
 
-    if (rrn > max_jump) // RRN inválido
-    {
-        printf("Espécie não encontrada");
-        return;
-    }
+    if ((1600 + (160 * RRN)) > max)
+        return 0;
 
-    if (fseek(file, rrn * jump_size, SEEK_SET) != 0)
-    {
-        printf("Espécie não encontrada");
-        return;
-    }
+    fseek(file, 1600 + (160 * RRN), SEEK_SET);
+    char thrash;
+    fread(&thrash, sizeof(char), 1, file);
+    fseek(file, save, SEEK_SET);
+    return (thrash == '1') ? 1 : 0;
+}
 
-    // lê do arquivo
-    readSpeciesFile(&temp_species, file);
-
-    // mostra na tela
-    printSpecies(temp_species);
-};
-
- registerInfoSpecies (COMANDO 4)
- *
- *  Pede um ID, o número n de informações a serem modificadas.
- *  Para cada n, lê-se uma instrução e o dado referente
-
-void registerInfoSpecies(FILE *file)
+int copyDinoRRN(int i, int j, FILE *file)
 {
-    Species temp_species;
+    int save = ftell(file);
+    // ler o j
 
-    int jump_size = sizeof(temp_species.species_id) + sizeof(temp_species.name) +
-                    sizeof(temp_species.scientific_name) + sizeof(temp_species.population) +
-                    sizeof(temp_species.status) + sizeof(temp_species.location) +
-                    sizeof(temp_species.human_impact);
+    fseek(file, 1600 + (160 * j), SEEK_SET);
+    char buffer1[161];
+    fread(&buffer1, sizeof(char), 160, file);
 
-    // leitura do ID do comando
-    int target_id;
-    if (DEBUG == 1)
-        printf("TARGET_ID: ");
-    scanf("%d", &target_id);
+    char buffer2[161];
+    fseek(file, 1600 + (160 * i), SEEK_SET);
+    fread(&buffer2, sizeof(char), 160, file);
 
-    // leitura do ID correspondente
-    do
-    {
-        // lê do arquivo
-        readSpeciesFile(&temp_species, file);
-    } while (temp_species.species_id != target_id && !feof(file));
+    fseek(file, 1600 + (160 * j), SEEK_SET);
+    fwrite(&buffer2, sizeof(char), 160, file);
 
-    if (DEBUG == 1)
-        printf("TEMP_SPECIES_ID: %d", temp_species.species_id);
+    fseek(file, 1600 + (160 * i), SEEK_SET);
+    fwrite(&buffer1, sizeof(char), 160, file);
 
-    if (temp_species.species_id != target_id)
-    {
-        printf("Espécie não encontrada\n");
-        return;
-    }
-
-    // lê quantidade de informações
-    int ttl_changes;
-    if (DEBUG == 1)
-        printf("\nTTL_CHANGES: ");
-    scanf("%d", &ttl_changes);
-
-    char instruction[20];
-    int instruction_cmd;
-    int hi = -1, population = -1;
-    char status[STATUS_SIZE];
-    memset(&status, '$', STATUS_SIZE);
-
-    while (ttl_changes--)
-    {
-        if (DEBUG == 1)
-            printf("INSTRUCTION: ");
-        readline(instruction);
-        if (strcmp(instruction, "STATUS") == 0)
-        {
-            instruction_cmd = 1;
-        }
-        if (strcmp(instruction, "HUMAN IMPACT") == 0)
-        {
-            instruction_cmd = 2;
-        }
-        if (strcmp(instruction, "POPULATION") == 0)
-        {
-            instruction_cmd = 3;
-        }
-        switch (instruction_cmd)
-        {
-        case (1): {
-            if (strcmp(temp_species.status, "NULO") == 0)
-            {
-                readline(status);
-                if (DEBUG == 1)
-                {
-                    printf("cur_status: %s\n", temp_species.status);
-                    printf("%s", status);
-                }
-                strcpy(temp_species.status, status);
-            }
-            else
-            {
-                if (DEBUG == 1)
-                    printf("cur_status: %s\n", temp_species.status);
-                printf("Informação já inserida no arquivo\n");
-            }
-            break;
-        }
-
-        case (2): {
-            if (DEBUG == 1)
-                printf("hi: ");
-            if (!temp_species.human_impact)
-            {
-                scanf("%d", &hi);
-            }
-            else
-            {
-                printf("Informação já inserida no arquivo\n");
-            }
-            break;
-        }
-
-        case (3): {
-            if (DEBUG == 1)
-                printf("population: ");
-            if (!temp_species.population)
-            {
-                scanf("%d", &population);
-            }
-            else
-            {
-                printf("Informação já inserida no arquivo\n");
-            }
-            break;
-        }
-        }
-
-        // escrita dos dados no arquivo
-        int current_pos = ftell(file);
-        fseek(file, current_pos - jump_size, SEEK_SET);
-
-        fwrite(&temp_species.species_id, sizeof(int), 1, file);
-        fwrite(&temp_species.name, NAME_SIZE * sizeof(char), 1, file);
-        fwrite(&temp_species.scientific_name, SCIENTIFIC_SIZE * sizeof(char), 1, file);
-        if (population != -1)
-        {
-            fwrite(&population, sizeof(int), 1, file);
-        }
-        else
-        {
-            fwrite(&temp_species.population, sizeof(int), 1, file);
-        }
-        fwrite(&temp_species.status, STATUS_SIZE * sizeof(char), 1, file);
-        fwrite(&temp_species.location[0], sizeof(float), 1, file);
-        fwrite(&temp_species.location[1], sizeof(float), 1, file);
-        if (hi != -1)
-        {
-            fwrite(&hi, sizeof(int), 1, file);
-        }
-        else
-        {
-            fwrite(&temp_species.human_impact, sizeof(int), 1, file);
-        }
-    }
-};*/
+    fseek(file, save, SEEK_SET);
+    return 1;
+}

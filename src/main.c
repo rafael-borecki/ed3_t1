@@ -13,7 +13,7 @@
 #include "../headers/func_3.h"
 #include "../headers/func_4.h"
 #include "../headers/func_5.h"
-//#include "../headers/func_.h"
+#include "../headers/func_6.h"
 #include "../headers/funcoes_fornecidas.h"
 #include "../headers/readInput.h"
 #include "../headers/speciesRoutines.h"
@@ -25,10 +25,9 @@ int main()
      * input2 = 2 string
      * input3 = resto da primeira string
      */
-    char inputstr[MAX_STR_LEN];
-    char command, input1[MAX_STR_LEN], input2[MAX_STR_LEN], input3[MAX_STR_LEN];
+    char input1[MAX_STR_LEN], input2[MAX_STR_LEN], input3[MAX_STR_LEN];
 
-    ReadInput(&command, input1, input2, input3, inputstr);
+    ReadInput(input1, input2, input3);
 
     switch (input1[0])
     {
@@ -51,6 +50,10 @@ int main()
     }
     case ('5'): {
         funcionality5(input1, input2, input3);
+        break;
+    }
+    case ('6'): {
+        funcionality6(input1, input2, input3);
         break;
     }
     }
