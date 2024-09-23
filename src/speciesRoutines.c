@@ -1,6 +1,5 @@
 #include "./../headers/speciesRoutines.h"
 #include <stdio.h>
-#include <string.h>
 
 #define DEBUG1 0
 #define DEBUG2 0
@@ -403,57 +402,102 @@ int removeDinoRRN(int i, FILE *file, Header *head)
  * Se não existir, adiciona a espécie normalmente no arquivo "filename".
  * Se existir o ID, não registra a espécie no arquivo e pula para a próxima
  * entrada do teclado.
-
-void registerSpecies(char *filename)
+*/
+void readFromInput(Dinosaur *temp_dino)
 {
-    // leitura do stdin
-    Species temp_species;
-    memset(&temp_species, '$', sizeof(temp_species));
+    char name[MAX_CSV_LEN], diet[MAX_CSV_LEN], habitat[MAX_CSV_LEN], type[MAX_CSV_LEN],
+        speciesName[MAX_CSV_LEN], food[MAX_CSV_LEN], velocityMeasure[MIN_STR_LEN],
+        population[MIN_STR_LEN], velocity[MIN_STR_LEN], length[MIN_STR_LEN];
+    scan_quote_string(name);
+    scan_quote_string(diet);
+    scan_quote_string(habitat);
+    scan_quote_string(population);
+    scan_quote_string(type);
+    scan_quote_string(velocity);
+    scan_quote_string(velocityMeasure);
+    scan_quote_string(length);
+    scan_quote_string(speciesName);
+    scan_quote_string(food);
 
-    scanf("%d", &temp_species.species_id);
-    readline(temp_species.name);
-    readline(temp_species.scientific_name);
-    scanf("%d", &temp_species.population);
-    readline(temp_species.status);
-    scanf("%f %f", &temp_species.location[0], &temp_species.location[1]);
-    scanf("%d", &temp_species.human_impact);
+    temp_dino->removed = '0';
+    temp_dino->chain = -1;
+    if (!strcmp(population, ""))
+        temp_dino->population = -1;
+    else
+        temp_dino->population = atoi(population);
 
-    // verifica se o ID da espécie já foi registrado
-    if (searchSpecies(filename, temp_species.species_id) == 1)
-    {
-        printf("Informação já inserida no arquivo\n");
-        return;
-    }
+    if (!strcmp(length, ""))
+        temp_dino->length = -1;
+    else
+        temp_dino->length = atof(length);
 
-    // abre o arquivo para inserção
-    FILE *file = fopen(filename, "ab");
-    if (!file)
-    {
-        printf("Falha no processamento do arquivo\n");
-        return;
-    }
+    if (!strcmp(velocity, ""))
+        temp_dino->velocity = -1;
+    else
+        temp_dino->velocity = atoi(velocity);
 
-    // escreve no arquivo
-    writeSpeciesFile(&temp_species, file);
+    if (!strcmp(velocityMeasure, ""))
+        temp_dino->measure_unit = '$';
+    else
+        temp_dino->measure_unit = velocityMeasure[0];
 
-    fclose(file);
+    if (!strcmp(name, ""))
+        strcpy(temp_dino->name, "");
+    else
+        strcpy(temp_dino->name, name);
+
+    if (!strcmp(speciesName, ""))
+        strcpy(temp_dino->specie_name, "");
+    else
+        strcpy(temp_dino->specie_name, speciesName);
+
+    if (!strcmp(habitat, ""))
+        strcpy(temp_dino->habitat, "");
+    else
+        strcpy(temp_dino->habitat, habitat);
+
+    if (!strcmp(diet, ""))
+        strcpy(temp_dino->diet, "");
+    else
+        strcpy(temp_dino->diet, diet);
+
+    if (!strcmp(type, ""))
+        strcpy(temp_dino->type, "");
+    else
+        strcpy(temp_dino->type, type);
+
+    if (!strcmp(food, ""))
+        strcpy(temp_dino->food, "");
+    else
+        strcpy(temp_dino->food, food);
 }
-
+/*
  reportSpecies (COMANDO 2)
  *
  * Dada uma certa posição do ponteiro file, printa na tela todo
  * o registro da espécie
-
-void reportSpecies(FILE *file)
+*/
+void writeDinoRRN(int RRN, FILE *file, Dinosaur *temp_dino)
 {
-    // leiura do registro no arquivo
-    Species temp_species;
-    readSpeciesFile(&temp_species, file);
+    int save = ftell(file);
+    fseek(file, 1600 + (RRN * 160), SEEK_SET);
+    writeDinoFile(temp_dino, file);
 
-    // mostra na tela
-    printSpecies(temp_species);
+    fseek(file, save, SEEK_SET);
 };
 
+int searchNextChain(int RRN, FILE *file, Dinosaur *temp_dino)
+{
+    int save = ftell(file);
+    fseek(file, 1600 + (RRN * 160), SEEK_SET);
+    char thrash;
+    int proxRRN;
+    fread(&thrash, sizeof(char), 1, file);
+    fread(&proxRRN, sizeof(int), 1, file);
+    fseek(file, save, SEEK_SET);
+    return proxRRN;
+}
+/*
  searchSpeciesRRN (COMANDO 3)
  *
  * Dado um RRN, procura o registro que ocupa o RRN passado.

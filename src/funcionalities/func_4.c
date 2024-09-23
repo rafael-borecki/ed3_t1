@@ -1,7 +1,7 @@
 #include "./../../headers/func_4.h"
 
 #define DEBUG 0
-#define DEBUG1 1
+#define DEBUG1 0
 // input1 = arquivo
 // input2 = n
 // input3 = resto da string de entrada

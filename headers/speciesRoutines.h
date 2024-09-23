@@ -1,6 +1,7 @@
 #ifndef __SPECIES_ROUTINES__
 #define __SPECIES_ROUTINES__
 
+#include "funcoes_fornecidas.h"
 #include "headerRoutines.h"
 #include <math.h>
 #include <stdio.h>
@@ -49,4 +50,8 @@ void ReadFromFile(Dinosaur *temp_dino, FILE *file);
 void writeDinoFile(Dinosaur *temp_species, FILE *file);
 int compareDino(char *field, char *value, Dinosaur *temp_dino);
 int removeDinoRRN(int i, FILE *file, Header *head);
+void readFromInput(Dinosaur *temp_dino);
+void writeDinoRRN(int RRN, FILE *file, Dinosaur *temp_dino);
+int searchNextChain(int RRN, FILE *file, Dinosaur *temp_dino);
+
 #endif

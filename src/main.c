@@ -12,7 +12,7 @@
 #include "../headers/func_2.h"
 #include "../headers/func_3.h"
 #include "../headers/func_4.h"
-//#include "../headers/func_.h"
+#include "../headers/func_5.h"
 //#include "../headers/func_.h"
 #include "../headers/funcoes_fornecidas.h"
 #include "../headers/readInput.h"
@@ -47,6 +47,10 @@ int main()
     }
     case ('4'): {
         funcionality4(input1, input2, input3);
+        break;
+    }
+    case ('5'): {
+        funcionality5(input1, input2, input3);
         break;
     }
     }
