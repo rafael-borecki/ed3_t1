@@ -7,11 +7,11 @@
 typedef struct
 {
     char status;
-    int topo;
-    int proxRRN;
-    int nroRegRem;
-    int nroPagDisco;
-    int qttCompacta;
+    int top;
+    int nextRRN;
+    int remRegNum;
+    int diskPageNum;
+    int compactNum;
 } Header;
 
 int createHeader(Header *head, FILE *file);

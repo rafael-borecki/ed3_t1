@@ -1,51 +1,18 @@
 #include "./../headers/speciesRoutines.h"
-#include <stdio.h>
-#include <sys/types.h>
 
-#define DEBUG1 0
-#define DEBUG2 0
 #define DEBUG_CSV 0
 #define DEBUG_PRINT 0
 
-void DebugFile(char *filename, Header *head)
-{
-    FILE *fp;
-    fp = fopen(filename, "rb");
-    if (!fp)
-        return;
-
-    if (DEBUG1)
-    {
-        fseek(fp, 0, SEEK_END);
-        int filelen = ftell(fp);
-        fseek(fp, 0, SEEK_SET);
-        char buffer;
-
-        for (int i = 0; i < filelen; i++)
-        {
-            fread(&buffer, 1, 1, fp);
-            printf("%d ", buffer);
-        }
-    }
-
-    if (DEBUG2)
-    {
-        fseek(fp, 1600, SEEK_SET);
-        Dinosaur temp;
-        for (int i = 0; i < head->nroPagDisco; i++)
-        {
-            ReadFromFile(&temp, fp);
-            printDino(temp);
-        }
-    }
-
-    fclose(fp);
-}
-
+/* ReadFomCsv
+ * read one file from a .csv file and put its content into a struct Dinosaur passed by reference
+ *
+ * Makes NULL exception threatment when necessary
+ *
+ */
 int ReadFromCsv(Dinosaur *temp_dino, FILE *file)
 {
-    char line[MAX_CSV_LEN + 1];
-    if (fgets(line, MAX_CSV_LEN, file) != NULL)
+    char line[MAX_CSV_LINE_LEN + 1];
+    if (fgets(line, MAX_CSV_LINE_LEN, file) != NULL)
     {
         if (DEBUG_CSV)
         {
@@ -54,14 +21,15 @@ int ReadFromCsv(Dinosaur *temp_dino, FILE *file)
         }
         char *token;
         char *point = line;
-        // nome
+
+        // name
         token = strsep(&point, ",");
         if (*token == '\0' || *token == '\n' || *token == 10)
             strcpy(temp_dino->name, "");
         else
             strcpy(temp_dino->name, token);
 
-        // dieta
+        // diet
         token = strsep(&point, ",");
         if (*token == '\0' || *token == '\n' || *token == 10)
             strcpy(temp_dino->diet, "");
@@ -75,70 +43,77 @@ int ReadFromCsv(Dinosaur *temp_dino, FILE *file)
         else
             strcpy(temp_dino->habitat, token);
 
-        // população
+        // population
         token = strsep(&point, ",");
         if (*token == '\0' || *token == '\n' || *token == 10)
             temp_dino->population = -1;
         else
             temp_dino->population = atoi(token);
 
-        // tipo
+        // type
         token = strsep(&point, ",");
         if (*token == '\0' || *token == '\n' || *token == 10)
             strcpy(temp_dino->type, "");
         else
             strcpy(temp_dino->type, token);
 
-        // velocidade
+        // velocity
         token = strsep(&point, ",");
         if (*token == '\0' || *token == '\n' || *token == 10)
             temp_dino->velocity = -1;
         else
             temp_dino->velocity = atoi(token);
 
-        // unidade de medida
+        // measure unit
         token = strsep(&point, ",");
         if (*token == '\0' || *token == '\n' || *token == 10)
             temp_dino->measure_unit = '$';
         else
             temp_dino->measure_unit = *token;
 
-        // tamanho
+        // length
         token = strsep(&point, ",");
         if (*token == '\0' || *token == '\n' || *token == 10)
             temp_dino->length = -1;
         else
             temp_dino->length = atof(token);
 
-        // espécie
+        // species_name
         token = strsep(&point, ",");
         if (*token == '\0' || *token == '\n' || *token == 10)
             strcpy(temp_dino->specie_name, "");
         else
             strcpy(temp_dino->specie_name, token);
 
-        // comida
+        // food
         token = strsep(&point, "\r");
         if (*token == '\0' || *token == '\n' || *token == 13)
             strcpy(temp_dino->food, "");
         else
             strcpy(temp_dino->food, token);
 
-        // campos vazios
+        // control fields initialization
         temp_dino->removed = '0';
         temp_dino->chain = -1;
         return 1;
     }
+    // cannot read new lines
     return 0;
 }
-
+/* ReadFromFile
+ *
+ * Read the next 160 bytes from where the file is appointed and put its information inside the
+ * struct Dinosaur passed by reference
+ */
 void ReadFromFile(Dinosaur *temp_dino, FILE *file)
 {
-
-    // dados fixos
+    // count the amount of readed bytes
     int readed_bytes = 0;
 
+    // reading fixed length fields
     fread(&temp_dino->removed, sizeof(char), 1, file);
+
+    // if the register is removed, there is no need to continue reading the register
     if (temp_dino->removed == '1')
     {
         fseek(file, 159, SEEK_CUR);
@@ -153,32 +128,35 @@ void ReadFromFile(Dinosaur *temp_dino, FILE *file)
 
     readed_bytes += 18;
 
-    // dados variados
-    char buffer[161];
-    char *pointer_buffer = buffer;
+    // reading variable length fields
+    char buffer[161]; // temporary buffer
     fread(buffer, sizeof(char), 142, file);
 
-    // printf("%s %ld\n", buffer, strlen(buffer));
-    // char temp_buffer[100];
-    char *token;
+    char *pointer_buffer = buffer; // temporary variables
+    char *token;                   // to use strsep()
+
+    // name
     token = strsep(&pointer_buffer, "#");
     if (*token == '\0' || *token == '\n' || *token == 10)
         strcpy(temp_dino->name, "");
     else
         strcpy(temp_dino->name, token);
 
+    // specie_name
     token = strsep(&pointer_buffer, "#");
     if (*token == '\0' || *token == '\n' || *token == 10)
         strcpy(temp_dino->specie_name, "");
     else
         strcpy(temp_dino->specie_name, token);
 
+    // habitat
     token = strsep(&pointer_buffer, "#");
     if (*token == '\0' || *token == '\n' || *token == 10)
         strcpy(temp_dino->habitat, "");
     else
         strcpy(temp_dino->habitat, token);
 
+    // type
     token = strsep(&pointer_buffer, "#");
     if (*token == '\0' || *token == '\n' || *token == 10)
         strcpy(temp_dino->type, "");
@@ -186,11 +164,13 @@ void ReadFromFile(Dinosaur *temp_dino, FILE *file)
         strcpy(temp_dino->type, token);
     token = strsep(&pointer_buffer, "#");
 
+    // diet
     if (*token == '\0' || *token == '\n' || *token == 10)
         strcpy(temp_dino->diet, "");
     else
         strcpy(temp_dino->diet, token);
 
+    // food
     token = strsep(&pointer_buffer, "#");
     if (*token == '\0' || *token == '\n' || *token == 10)
         strcpy(temp_dino->food, "");
@@ -198,12 +178,19 @@ void ReadFromFile(Dinosaur *temp_dino, FILE *file)
         strcpy(temp_dino->food, token);
 }
 
+/* WriteDinoFile
+ *
+ * write the information inside a struct Dinosar into the binary file following the instructions
+ * passed
+ *
+ * Write exactly one register (160 bytes)
+ */
+
 void writeDinoFile(Dinosaur *temp_species, FILE *file)
 {
     int written_bytes = 0;
 
-    // registros de tamanho fixo
-    // tratamento para os casos onde o campo é nulo
+    // writing fixed length fields
     fwrite(&temp_species->removed, sizeof(char), 1, file);
     fwrite(&temp_species->chain, sizeof(int), 1, file);
     fwrite(&temp_species->population, sizeof(int), 1, file);
@@ -211,19 +198,13 @@ void writeDinoFile(Dinosaur *temp_species, FILE *file)
     fwrite(&temp_species->measure_unit, sizeof(char), 1, file);
     fwrite(&temp_species->velocity, sizeof(int), 1, file);
 
-    // 18 bytes escritos
     written_bytes += 18;
 
-    // registros de tamanho variável
-    // se é nulo -> apenas um hashtag
+    // writing fixed length fields
     int temp_length = 0;
     char delimiter = '#';
 
-    /*
-     * DA PRA TIRAR OS IF's E ELSES,
-     */
-
-    // nome
+    // name
     temp_length = strlen(temp_species->name);
     if (temp_length == 0)
     {
@@ -237,7 +218,7 @@ void writeDinoFile(Dinosaur *temp_species, FILE *file)
         written_bytes += (temp_length + 1);
     }
 
-    // specie_name
+    // species_name
     temp_length = strlen(temp_species->specie_name);
     if (temp_species == 0)
     {
@@ -264,6 +245,7 @@ void writeDinoFile(Dinosaur *temp_species, FILE *file)
         fwrite(&delimiter, sizeof(char), 1, file);
         written_bytes += (temp_length + 1);
     }
+
     // type
     temp_length = strlen(temp_species->type);
     if (temp_length == 0)
@@ -277,6 +259,7 @@ void writeDinoFile(Dinosaur *temp_species, FILE *file)
         fwrite(&delimiter, sizeof(char), 1, file);
         written_bytes += (temp_length + 1);
     }
+
     // diet
     temp_length = strlen(temp_species->diet);
     if (temp_length == 0)
@@ -291,6 +274,7 @@ void writeDinoFile(Dinosaur *temp_species, FILE *file)
         written_bytes += (temp_length + 1);
     }
 
+    // food
     temp_length = strlen(temp_species->food);
     if (temp_length == 0)
     {
@@ -303,19 +287,27 @@ void writeDinoFile(Dinosaur *temp_species, FILE *file)
         fwrite(&delimiter, sizeof(char), 1, file);
         written_bytes += (temp_length + 1);
     }
-    // encher com filler
+
+    // fill with the "filler character"
     char filler = '$';
-    for (int i = 0; i < MAX_REGISTER_LEN - written_bytes; i++)
+    for (int i = 0; i < REGISTER_LEN - written_bytes; i++)
         fwrite(&filler, sizeof(char), 1, file);
 }
-
-// searchSpecies **Procura no arquivo "filename" algum registro com o mesmo ID passado no argumento
-// da
-//    função **Se achar um registro com ID igual,
-//    retorna 1 * Se não, retorna 0;
-
+/* compareDino
+ *
+ * receive two strings and one struct Dinosaur
+ *
+ * compare the field's value passed by strings with the field's value passed by struct
+ *
+ * if they are equal, return 1
+ * if not, return 0
+ *
+ */
 int compareDino(char *field, char *value, Dinosaur *temp_dino)
 {
+    // first compare the fields
+    // then, compare the values
+
     if (!strcmp("populacao", field))
         return (temp_dino->population == atoi(value)) ? 1 : 0;
     if (!strcmp("tamanho", field))
@@ -325,7 +317,6 @@ int compareDino(char *field, char *value, Dinosaur *temp_dino)
     if (!strcmp("velocidade", field))
         return (temp_dino->velocity == atoi(value)) ? 1 : 0;
 
-    // tamanho variável
     if (!strcmp("nome", field))
         return (!strcmp(temp_dino->name, value)) ? 1 : 0;
     if (!strcmp("especie", field))
@@ -340,9 +331,13 @@ int compareDino(char *field, char *value, Dinosaur *temp_dino)
         return (!strcmp(temp_dino->food, value)) ? 1 : 0;
     return 0;
 }
-
-// FAZER TRATAMENTO PARA CAMPOS NULOS
-
+/* printDino
+ *
+ * print the informations passed on a struct Dinosaur
+ *
+ * Has NULL exception threatment
+ *
+ */
 void printDino(Dinosaur temp_dino)
 {
     if (DEBUG_PRINT)
@@ -368,48 +363,55 @@ void printDino(Dinosaur temp_dino)
     if (DEBUG_PRINT)
     {
         printf("population: %d\n", temp_dino.population);
-
         printf("food: %s\n\n", temp_dino.food);
     }
 }
-
-// baseado no RRN, faz a remoção lógica do registro
-int removeDinoRRN(int i, FILE *file, Header *head)
+/* remove DinoRRN
+ *
+ * remove logically the register in the RRN passed on the function, it includes changing its control
+ * filds: "removed" and "chain" following the instructions passed
+ *
+ * Update the header
+ *
+ * Before finishing the function, returns the pointer to the point it was before the modifications
+ *
+ */
+int removeDinoRRN(int RRN, FILE *file, Header *head)
 {
+    // save position
     int save = ftell(file);
-    fseek(file, 1600, SEEK_SET);
-    fseek(file, i * 160, SEEK_CUR);
 
-    // alteração do arquivo binário
+    fseek(file, 1600 + (RRN * 160), SEEK_SET);
+
+    // modify the register
+    head->status = '0';
     char removed = '1';
     char thrash[155];
     memset(thrash, '$', 155 * sizeof(char));
     fwrite(&removed, sizeof(char), 1, file);
-    fwrite(&head->topo, sizeof(int), 1, file);
+    fwrite(&head->top, sizeof(int), 1, file);
     fwrite(thrash, sizeof(unsigned char), 155, file);
 
-    // aleteração do header
-    head->topo = i;
-    head->nroRegRem += 1;
+    // modify the header information
+    head->status = '1';
+    head->top = RRN;
+    head->remRegNum += 1;
 
+    // return to the position it was at the beginning
     fseek(file, save, SEEK_SET);
     return 1;
 }
-/*
- registerSpecies (COMANDO 1)
+/* ReadFromInput
  *
- * Registra uma espécie a partir do teclado(stdin) no arquivo binário "filename".
+ * Read informations passed on input by the user and register it on a struct passed by reference
  *
- * Antes de adicionar a espécie ao arquivo, verifica se o ID dela é unico.
- * Se não existir, adiciona a espécie normalmente no arquivo "filename".
- * Se existir o ID, não registra a espécie no arquivo e pula para a próxima
- * entrada do teclado.
-*/
+ */
 void readFromInput(Dinosaur *temp_dino)
 {
-    char name[MAX_CSV_LEN], diet[MAX_CSV_LEN], habitat[MAX_CSV_LEN], type[MAX_CSV_LEN],
-        speciesName[MAX_CSV_LEN], food[MAX_CSV_LEN], velocityMeasure[MIN_STR_LEN],
-        population[MIN_STR_LEN], velocity[MIN_STR_LEN], length[MIN_STR_LEN];
+    // reading information
+    char name[MAX_VALUE_LEN], diet[MAX_VALUE_LEN], habitat[MAX_VALUE_LEN], type[MAX_VALUE_LEN],
+        speciesName[MAX_VALUE_LEN], food[MAX_VALUE_LEN], velocityMeasure[SMALL_VALUE_LEN],
+        population[SMALL_VALUE_LEN], velocity[SMALL_VALUE_LEN], length[SMALL_VALUE_LEN];
     scan_quote_string(name);
     scan_quote_string(diet);
     scan_quote_string(habitat);
@@ -421,8 +423,11 @@ void readFromInput(Dinosaur *temp_dino)
     scan_quote_string(speciesName);
     scan_quote_string(food);
 
+    // initializing control fields
     temp_dino->removed = '0';
     temp_dino->chain = -1;
+
+    // NULL threatment
     if (!strcmp(population, ""))
         temp_dino->population = -1;
     else
@@ -473,33 +478,54 @@ void readFromInput(Dinosaur *temp_dino)
     else
         strcpy(temp_dino->food, food);
 }
-/*
- reportSpecies (COMANDO 2)
+/* writeDinoRRN
  *
- * Dada uma certa posição do ponteiro file, printa na tela todo
- * o registro da espécie
-*/
+ * write a register (160 bytes) containing the informations passed by the Dinosaur struct
+ *
+ * after the operation, the file pointer "comes back" to the position it was before the operation
+ *
+ */
 void writeDinoRRN(int RRN, FILE *file, Dinosaur *temp_dino)
 {
+    // save position
     int save = ftell(file);
+
     fseek(file, 1600 + (RRN * 160), SEEK_SET);
     writeDinoFile(temp_dino, file);
 
     fseek(file, save, SEEK_SET);
 };
-
-int searchNextChain(int RRN, FILE *file, Dinosaur *temp_dino)
+/* searchNextChain
+ *
+ * Return the field "field" from a register at the RRN passed
+ *
+ * Dont change the position of the FILE pointer passed
+ *
+ */
+int searchNextChain(int RRN, FILE *file)
 {
+    // save position
     int save = ftell(file);
     fseek(file, 1600 + (RRN * 160), SEEK_SET);
+
+    // read informations
     char thrash;
     int proxRRN;
     fread(&thrash, sizeof(char), 1, file);
     fread(&proxRRN, sizeof(int), 1, file);
+
+    // return the position
     fseek(file, save, SEEK_SET);
     return proxRRN;
 }
 
+/* isDinoRemovedRRN
+ *
+ * based on RRN, checks if the register at this RRN is removed or not
+ *
+ * if removed, return 1
+ * else, return 0
+ */
 int isDinoRemovedRRN(int RRN, FILE *file)
 {
     int save = ftell(file);
@@ -515,26 +541,34 @@ int isDinoRemovedRRN(int RRN, FILE *file)
     fseek(file, save, SEEK_SET);
     return (thrash == '1') ? 1 : 0;
 }
-
-int copyDinoRRN(int i, int j, FILE *file)
+/* swapDinoRRN
+ *
+ * swap the bytes of 2 registers passed based on their RRN
+ *
+ * Dont change the FILE pointer position after the funcion is ended
+ *
+ */
+int swapDinoRRN(int RRN_1, int RRN_2, FILE *file)
 {
+    // save position
     int save = ftell(file);
-    // ler o j
 
-    fseek(file, 1600 + (160 * j), SEEK_SET);
+    // changing bytes
     char buffer1[161];
+    fseek(file, 1600 + (160 * RRN_1), SEEK_SET);
     fread(&buffer1, sizeof(char), 160, file);
 
     char buffer2[161];
-    fseek(file, 1600 + (160 * i), SEEK_SET);
+    fseek(file, 1600 + (160 * RRN_2), SEEK_SET);
     fread(&buffer2, sizeof(char), 160, file);
 
-    fseek(file, 1600 + (160 * j), SEEK_SET);
+    fseek(file, 1600 + (160 * RRN_2), SEEK_SET);
     fwrite(&buffer2, sizeof(char), 160, file);
 
-    fseek(file, 1600 + (160 * i), SEEK_SET);
+    fseek(file, 1600 + (160 * RRN_1), SEEK_SET);
     fwrite(&buffer1, sizeof(char), 160, file);
 
+    // return position
     fseek(file, save, SEEK_SET);
     return 1;
 }

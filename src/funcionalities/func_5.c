@@ -2,84 +2,70 @@
 
 #define DEBUG 0
 #define DEBUG1 0
-// input1 = arquivo
-// input2 = n
-// input3 = resto da string de entrada
 
-int funcionality5(char input1[], char input2[], char input3[])
+int funcionality5(char inputFileName[], char query_num[])
 {
-    if (DEBUG)
-    {
-        printf("%s\n", input1);
-        int n = atoi(input3);
-        printf("%d\n", n);
-        printf("%s %ld\n", input3, strlen(input3));
-    }
-
-    int n = atoi(input3);
+    int n = atoi(query_num);
     for (int i = 1; i <= n; i++)
     {
-
+        // read the informations from input
         Dinosaur temp_dino;
         readFromInput(&temp_dino);
-        if (DEBUG1)
+
+        if (DEBUG)
             printDino(temp_dino);
 
-        /*if (DEBUG1)
-        {
-            printf("%s %s\n", field, value);
-            if (!strcmp("velocidade", field))
-                printf("|%d|", atoi(value) == 5200000);
-        }*/
-
-        FILE *file_in;
-        file_in = fopen(input2, "rb+");
-        if (!file_in)
+        // opening file to make modificantions: read and write mode
+        FILE *file;
+        file = fopen(inputFileName, "rb+");
+        if (!file)
         {
             printf("Falha no processamento do arquivo\n");
             return EXIT_FAILURE;
         }
 
-        // lê o cabeçalho
+        // read header informations
         Header head;
-        if (readHeader(&head, file_in) == 0)
+        if (readHeader(&head, file) == 0)
         {
             printf("Registro inexistente.\n");
             return 0;
         };
-
-        // se status = 0, deu ruim
-        // se status = 1, deu bom
         if (head.status == '0')
         {
             printf("Falha no processamento do arquivo");
             return 0;
         }
-        // se topo -1 ->
-        // adiciona no final
-        // atualiza header
+
+        // modifying the file
         head.status = '0';
 
-        if (head.topo == -1)
+        // insert on the end of file
+        if (head.top == -1)
         {
-            int RRN = head.proxRRN;
-            writeDinoRRN(RRN, file_in, &temp_dino);
-            head.proxRRN += 1;
-            head.nroPagDisco = ((head.proxRRN - 1 + 9) / 10) + 1;
+            int RRN = head.nextRRN;
+            writeDinoRRN(RRN, file, &temp_dino);
+            // update header informations
+            head.nextRRN += 1;
+            head.diskPageNum = ((head.nextRRN + 9) / 10) + 1;
         }
 
+        // insert on the top of the "removed stack"
         else
         {
-            int RRN = head.topo;
-            head.topo = searchNextChain(RRN, file_in, &temp_dino);
-            writeDinoRRN(RRN, file_in, &temp_dino);
-            head.nroRegRem -= 1;
+            int RRN = head.top;
+            head.top = searchNextChain(RRN, file, &temp_dino);
+            // updating header informations
+            writeDinoRRN(RRN, file, &temp_dino);
+            head.remRegNum -= 1;
         }
 
+        // finished modifying the file
         head.status = '1';
-        updateHeader(&head, file_in);
-        fclose(file_in);
+        // update header informatons
+        updateHeader(&head, file);
+        fclose(file);
     }
-    binarioNaTela(input2);
+    binarioNaTela(inputFileName);
     return 1;
 }

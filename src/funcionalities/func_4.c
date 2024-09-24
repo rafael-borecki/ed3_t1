@@ -2,21 +2,15 @@
 
 #define DEBUG 0
 #define DEBUG1 0
-// input1 = arquivo
-// input2 = n
-// input3 = resto da string de entrada
 
-int funcionality4(char input1[], char input2[], char input3[])
+int funcionality4(char inputFileName[], char query_num[])
 {
-    if (DEBUG)
-    {
-        printf("%s\n", input1);
-        int n = atoi(input3);
-        printf("%d\n", n);
-        printf("%s %ld\n", input3, strlen(input3));
-    }
+    // input2 is a string that has the name of the binary file
 
-    int n = atoi(input3);
+    // input3 is a string of the amount of times that the funcionality must be called
+    // similar to the funcionality3, instead of print the register on screen, remove it logically on
+    // the file
+    int n = atoi(query_num);
     for (int i = 1; i <= n; i++)
     {
         char field[MAX_CSV_LEN], value[MAX_CSV_LEN];
@@ -24,92 +18,51 @@ int funcionality4(char input1[], char input2[], char input3[])
         scan_quote_string(value);
 
         if (DEBUG1)
-        {
             printf("%s %s\n", field, value);
-            if (!strcmp("velocidade", field))
-                printf("|%d|", atoi(value) == 5200000);
-        }
 
-        FILE *file_in;
-        file_in = fopen(input2, "rb");
-        if (!file_in)
-        {
-            printf("Falha no processamento do arquivo\n");
-            return EXIT_FAILURE;
-        }
-
-        // lê o cabeçalho
-        Header head;
-        if (readHeader(&head, file_in) == 0)
-        {
-            printf("Registro inexistente.\n");
-            return 0;
-        };
-
-        // se status = 0, deu ruim
-        // se status = 1, deu bom
-        if (head.status == '0')
-        {
-            printf("Falha no processamento do arquivo");
-            return 0;
-        }
-
-        // printf("%d %ld", head.proxRRN, ftell(file_in));
-        //  printf("Busca %d\n", i);
-        Dinosaur temp_dino;
-        int isRemoved[head.proxRRN];
-
-        for (int j = 0; j < head.proxRRN; j++)
-        {
-            ReadFromFile(&temp_dino, file_in);
-            if (temp_dino.removed == '0')
-            {
-                if (compareDino(field, value, &temp_dino))
-                    isRemoved[j] = 1;
-                else
-                    isRemoved[j] = 0;
-            }
-            else
-                isRemoved[j] = 0;
-        }
-        fclose(file_in);
-
-        if (DEBUG1)
-        {
-            for (int j = 0; j < head.proxRRN; j++)
-                if (isRemoved[j])
-                    printf("%d ", j);
-            printf("\n");
-        }
-
+        // opening file with read mode
         FILE *file;
-        file = fopen(input2, "rb+");
+        file = fopen(inputFileName, "rb+");
         if (!file)
         {
             printf("Falha no processamento do arquivo\n");
             return EXIT_FAILURE;
         }
 
-        // se status = 0, deu ruim
-        // se status = 1, deu bom
+        // reading header information
+        Header head;
+        if (readHeader(&head, file) == 0)
+        {
+            printf("Registro inexistente.\n");
+            return 0;
+        };
         if (head.status == '0')
         {
-            printf("Falha no processamento do arquivo");
+            printf("Falha no processamento do arquivo\n");
             return 0;
         }
 
-        head.status = '0';
-        // printf("Busca %d\n", i);
-        for (int j = 0; j < head.proxRRN; j++)
+        // loop through file in the same way as funcionality 3, but instead of printing it on
+        // screen, remove the register
+        Dinosaur temp_dino;
+        for (int j = 0; j < head.nextRRN; j++)
         {
-            if (isRemoved[j])
-                removeDinoRRN(j, file, &head);
+            ReadFromFile(&temp_dino, file);
+            if (temp_dino.removed == '0') // posible remove
+            {
+                if (compareDino(field, value, &temp_dino)) // if
+                {
+                    removeDinoRRN(j, file, &head);
+                }
+            }
         }
 
+        // finish modifying
         head.status = '1';
+        // update header informations
         updateHeader(&head, file);
         fclose(file);
     }
-    binarioNaTela(input2);
+    binarioNaTela(inputFileName);
     return 1;
 }

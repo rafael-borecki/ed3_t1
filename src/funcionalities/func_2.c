@@ -1,49 +1,44 @@
 #include "../../headers/func_2.h"
-#include <stdio.h>
+#include <stdlib.h>
 
 int funcionality2(char inputFileName[])
 {
-
-    FILE *file_in;
-    file_in = fopen(inputFileName, "rb");
-    if (!file_in)
+    // opening file for read
+    FILE *file;
+    file = fopen(inputFileName, "rb");
+    if (!file)
     {
-        printf("Falha no processamento do arquivo\n");
+        msg_default_error();
         return EXIT_FAILURE;
     }
 
-    // lê o cabeçalho
+    // read header informations and save it on "head"
     Header head;
-    if (readHeader(&head, file_in) == 0)
+    if (readHeader(&head, file) == 0)
     {
-        printf("Registro inexistente.\n");
-        return 0;
+        msg_no_registers();
+        return EXIT_FAILURE;
     };
 
-    // se status = 0, deu ruim
-    // se status = 1, deu bom
     if (head.status == '0')
     {
-        printf("Falha no processamento do arquivo");
-        return 0;
+        msg_default_error();
+        return EXIT_FAILURE;
     }
-    // loop
-    //
-    // verifica se está removido ou não
-    //
-    // printa Dino
 
+    // Loop through binary file
     Dinosaur temp_dino;
-    for (int i = 0; i < head.proxRRN; i++)
+    for (int i = 0; i < head.nextRRN; i++)
     {
-        ReadFromFile(&temp_dino, file_in);
+        ReadFromFile(&temp_dino, file);
         if (temp_dino.removed == '0')
             printDino(temp_dino);
     }
 
-    fclose(file_in);
+    fclose(file);
 
-    printf("Numero de paginas de disco: %d\n\n", head.nroPagDisco);
+    // print the number of disk page
+    printf("Numero de paginas de disco: %d\n\n", head.diskPageNum);
 
     return 1;
 }
