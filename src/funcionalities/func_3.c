@@ -22,20 +22,20 @@ int funcionality3(char inputFileName[], char query_num[])
         file = fopen(inputFileName, "rb");
         if (!file)
         {
-            printf("Falha no processamento do arquivo\n");
-            return EXIT_FAILURE;
+            msg_default_error();
+            return 0;
         }
 
         // read the header information
         Header head;
         if (readHeader(&head, file) == 0)
         {
-            printf("Registro inexistente.\n");
+            msg_no_registers();
             return 0;
         };
         if (head.status == '0')
         {
-            printf("Falha no processamento do arquivo");
+            msg_default_error();
             return 0;
         }
 

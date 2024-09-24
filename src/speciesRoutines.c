@@ -130,7 +130,7 @@ void ReadFromFile(Dinosaur *temp_dino, FILE *file)
 
     // reading variable length fields
     char buffer[REGISTER_LEN - 18 + 1]; // temporary buffer
-    fread(buffer, sizeof(char), 142, file);
+    fread(buffer, sizeof(char), REGISTER_LEN - 18, file);
 
     char *pointer_buffer = buffer; // temporary variables
     char *token;                   // to use strsep()
@@ -290,7 +290,7 @@ void writeDinoFile(Dinosaur *temp_species, FILE *file)
 
     // fill with the "filler character"
     char filler = '$';
-    for (int i = 0; i < 160 - written_bytes; i++)
+    for (int i = 0; i < REGISTER_LEN - written_bytes; i++)
         fwrite(&filler, sizeof(char), 1, file);
 }
 /* compareDino
@@ -381,16 +381,16 @@ int removeDinoRRN(int RRN, FILE *file, Header *head)
     // save position
     int save = ftell(file);
 
-    fseek(file, 1600 + (RRN * 160), SEEK_SET);
+    fseek(file, DISK_PAGE_LEN + (RRN * REGISTER_LEN), SEEK_SET);
 
     // modify the register
     head->status = '0';
     char removed = '1';
-    char thrash[155 + 1];
-    memset(thrash, '$', 155 * sizeof(char));
+    char thrash[(REGISTER_LEN - 5) + 1];
+    memset(thrash, '$', (REGISTER_LEN - 5) * sizeof(char));
     fwrite(&removed, sizeof(char), 1, file);
     fwrite(&head->top, sizeof(int), 1, file);
-    fwrite(thrash, sizeof(unsigned char), 155, file);
+    fwrite(thrash, sizeof(unsigned char), REGISTER_LEN - 5, file);
 
     // modify the header information
     head->status = '1';
@@ -490,11 +490,11 @@ void writeDinoRRN(int RRN, FILE *file, Dinosaur *temp_dino)
     // save position
     int save = ftell(file);
 
-    fseek(file, 1600 + (RRN * 160), SEEK_SET);
+    fseek(file, DISK_PAGE_LEN + (RRN * REGISTER_LEN), SEEK_SET);
     writeDinoFile(temp_dino, file);
 
     fseek(file, save, SEEK_SET);
-};
+}
 /* searchNextChain
  *
  * Return the field "field" from a register at the RRN passed
@@ -506,7 +506,7 @@ int searchNextChain(int RRN, FILE *file)
 {
     // save position
     int save = ftell(file);
-    fseek(file, 1600 + (RRN * 160), SEEK_SET);
+    fseek(file, DISK_PAGE_LEN + (RRN * REGISTER_LEN), SEEK_SET);
 
     // read informations
     char thrash;
@@ -532,10 +532,10 @@ int isDinoRemovedRRN(int RRN, FILE *file)
     fseek(file, 0, SEEK_END);
     int max = ftell(file);
 
-    if ((1600 + (160 * RRN)) > max)
+    if ((DISK_PAGE_LEN + (REGISTER_LEN * RRN)) > max)
         return 0;
 
-    fseek(file, 1600 + (160 * RRN), SEEK_SET);
+    fseek(file, DISK_PAGE_LEN + (REGISTER_LEN * RRN), SEEK_SET);
     char thrash;
     fread(&thrash, sizeof(char), 1, file);
     fseek(file, save, SEEK_SET);
@@ -554,19 +554,19 @@ int swapDinoRRN(int RRN_1, int RRN_2, FILE *file)
     int save = ftell(file);
 
     // changing bytes
-    char buffer1[161];
-    fseek(file, 1600 + (160 * RRN_1), SEEK_SET);
-    fread(&buffer1, sizeof(char), 160, file);
+    char buffer1[REGISTER_LEN + 1];
+    fseek(file, DISK_PAGE_LEN + (REGISTER_LEN * RRN_1), SEEK_SET);
+    fread(&buffer1, sizeof(char), REGISTER_LEN, file);
 
-    char buffer2[161];
-    fseek(file, 1600 + (160 * RRN_2), SEEK_SET);
-    fread(&buffer2, sizeof(char), 160, file);
+    char buffer2[REGISTER_LEN + 1];
+    fseek(file, DISK_PAGE_LEN + (REGISTER_LEN * RRN_2), SEEK_SET);
+    fread(&buffer2, sizeof(char), REGISTER_LEN, file);
 
-    fseek(file, 1600 + (160 * RRN_2), SEEK_SET);
-    fwrite(&buffer2, sizeof(char), 160, file);
+    fseek(file, DISK_PAGE_LEN + (REGISTER_LEN * RRN_2), SEEK_SET);
+    fwrite(&buffer2, sizeof(char), REGISTER_LEN, file);
 
-    fseek(file, 1600 + (160 * RRN_1), SEEK_SET);
-    fwrite(&buffer1, sizeof(char), 160, file);
+    fseek(file, DISK_PAGE_LEN + (REGISTER_LEN * RRN_1), SEEK_SET);
+    fwrite(&buffer1, sizeof(char), REGISTER_LEN, file);
 
     // return position
     fseek(file, save, SEEK_SET);

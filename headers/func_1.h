@@ -7,5 +7,7 @@
 #include "./speciesRoutines.h"
 #include <stdio.h>
 #include <stdlib.h>
+
 int funcionality1(char inputFileName[], char outputFileName[]);
-#endif // __FUNCIONALITIES__
+
+#endif

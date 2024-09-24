@@ -1,7 +1,6 @@
 #include "./../../headers/func_4.h"
 
 #define DEBUG 0
-#define DEBUG1 0
 
 int funcionality4(char inputFileName[], char query_num[])
 {
@@ -17,7 +16,7 @@ int funcionality4(char inputFileName[], char query_num[])
         scanf("%s", field);
         scan_quote_string(value);
 
-        if (DEBUG1)
+        if (DEBUG)
             printf("%s %s\n", field, value);
 
         // opening file with read mode
@@ -25,20 +24,20 @@ int funcionality4(char inputFileName[], char query_num[])
         file = fopen(inputFileName, "rb+");
         if (!file)
         {
-            printf("Falha no processamento do arquivo\n");
-            return EXIT_FAILURE;
+            msg_default_error();
+            return 0;
         }
 
         // reading header information
         Header head;
         if (readHeader(&head, file) == 0)
         {
-            printf("Registro inexistente.\n");
+            msg_no_registers();
             return 0;
         };
         if (head.status == '0')
         {
-            printf("Falha no processamento do arquivo\n");
+            msg_default_error();
             return 0;
         }
 

@@ -10,4 +10,5 @@
 void msg_no_registers();
 void msg_register_not_found();
 void msg_default_error();
+void msg_non_existent_command();
 #endif

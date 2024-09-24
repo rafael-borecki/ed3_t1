@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define DISK_PAGE_LEN 1600
 #define REGISTER_LEN 160
 
 #define MAX_CSV_LINE_LEN 200

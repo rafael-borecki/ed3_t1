@@ -1,7 +1,6 @@
 #include "./../../headers/func_6.h"
 
 #define DEBUG 0
-#define DEBUG1 0
 
 int funcionality6(char inputFileName[])
 {
@@ -10,7 +9,7 @@ int funcionality6(char inputFileName[])
     file = fopen(inputFileName, "rb+");
     if (!file)
     {
-        printf("Falha no processamento do arquivo\n");
+        msg_default_error();
         return EXIT_FAILURE;
     }
 
@@ -18,14 +17,15 @@ int funcionality6(char inputFileName[])
     Header head;
     if (readHeader(&head, file) == 0)
     {
-        printf("Registro inexistente.\n");
+        msg_no_registers();
         return 0;
     };
     if (head.status == '0')
     {
-        printf("Falha no processamento do arquivo");
+        msg_default_error();
         return 0;
     }
+
     head.status = '0';
 
     // two pointers technique
@@ -52,7 +52,7 @@ int funcionality6(char inputFileName[])
     updateHeader(&head, file);
 
     // truncate the file in the "nextRRN" position
-    truncate(inputFileName, 1600 + (i * 160));
+    truncate(inputFileName, DISK_PAGE_LEN + (i * REGISTER_LEN));
 
     fclose(file);
 

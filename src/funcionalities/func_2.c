@@ -9,7 +9,7 @@ int funcionality2(char inputFileName[])
     if (!file)
     {
         msg_default_error();
-        return EXIT_FAILURE;
+        return 0;
     }
 
     // read header informations and save it on "head"
@@ -17,13 +17,13 @@ int funcionality2(char inputFileName[])
     if (readHeader(&head, file) == 0)
     {
         msg_no_registers();
-        return EXIT_FAILURE;
+        return 0;
     };
 
     if (head.status == '0')
     {
         msg_default_error();
-        return EXIT_FAILURE;
+        return 0;
     }
 
     // Loop through binary file

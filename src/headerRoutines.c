@@ -24,7 +24,7 @@ int createHeader(Header *head, FILE *file)
     fwrite(&head->compactNum, sizeof(int), 1, file);
 
     char aux = '$';
-    for (int i = 0; i < 1600 - 21; i++)
+    for (int i = 0; i < DISK_PAGE_LEN - 21; i++)
         fwrite(&aux, sizeof(char), 1, file);
     return 1;
 }

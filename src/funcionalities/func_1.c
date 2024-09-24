@@ -27,8 +27,8 @@ int funcionality1(char inputFileName[], char outputFileName[])
 
     // Loop through all the lines inputFileName, save the information of each line at struct
     // Dinosaur and write it on outputFileName
-    char thrash[160];
-    fgets(thrash, 160, file_in); // reading first line of .csv
+    char thrash[MAX_CSV_LINE_LEN + 1];
+    fgets(thrash, MAX_CSV_LINE_LEN, file_in); // reading first line of .csv
     Dinosaur dino;
     int register_num = 0;
     while (1)

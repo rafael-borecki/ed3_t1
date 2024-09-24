@@ -12,3 +12,7 @@ void msg_default_error()
 {
     printf("Falha no processamento do arquivo");
 }
+void msg_non_existent_command()
+{
+    printf("comando inexistente.\n");
+}

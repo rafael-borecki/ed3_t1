@@ -6,6 +6,9 @@
  * Alunos:
  * Rafael Borecki Guimarães de Carvalho - 14604271
  * Renan Correia Monteiro Soares - 14605661
+ *
+ * Porcentagem
+ *
  */
 
 #include "../headers/func_1.h"
@@ -14,6 +17,7 @@
 #include "../headers/func_4.h"
 #include "../headers/func_5.h"
 #include "../headers/func_6.h"
+#include "../headers/messages.h"
 #include "../headers/readInput.h"
 
 int main()
@@ -29,37 +33,39 @@ int main()
 
     switch (input1[0])
     {
-    case ('1'): {
+    case ('1'):
         // CREATE TABLE funcionality
         funcionality1(input2, input3);
         break;
-    }
 
-    case ('2'): {
+    case ('2'):
         // SELECT FROM funcionality
         funcionality2(input2);
         break;
-    }
-    case ('3'): {
+
+    case ('3'):
         // SELECT WHERE funcionality
         funcionality3(input2, input3);
         break;
-    }
-    case ('4'): {
+
+    case ('4'):
         // REMOVE funcionality
         funcionality4(input2, input3);
         break;
-    }
-    case ('5'): {
+
+    case ('5'):
         // INSERT INTO funcionality
         funcionality5(input2, input3);
         break;
-    }
-    case ('6'): {
+
+    case ('6'):
         // COMPACT funcionality
         funcionality6(input3);
         break;
-    }
+
+    default:
+        msg_non_existent_command();
+        break;
     }
     return 0;
 }
