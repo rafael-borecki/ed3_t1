@@ -116,7 +116,7 @@ void ReadFromFile(Dinosaur *temp_dino, FILE *file)
     // if the register is removed, there is no need to continue reading the register
     if (temp_dino->removed == '1')
     {
-        fseek(file, 159, SEEK_CUR);
+        fseek(file, REGISTER_LEN - 1, SEEK_CUR);
         return;
     }
 
@@ -129,7 +129,7 @@ void ReadFromFile(Dinosaur *temp_dino, FILE *file)
     readed_bytes += 18;
 
     // reading variable length fields
-    char buffer[161]; // temporary buffer
+    char buffer[REGISTER_LEN - 18 + 1]; // temporary buffer
     fread(buffer, sizeof(char), 142, file);
 
     char *pointer_buffer = buffer; // temporary variables
@@ -290,7 +290,7 @@ void writeDinoFile(Dinosaur *temp_species, FILE *file)
 
     // fill with the "filler character"
     char filler = '$';
-    for (int i = 0; i < REGISTER_LEN - written_bytes; i++)
+    for (int i = 0; i < 160 - written_bytes; i++)
         fwrite(&filler, sizeof(char), 1, file);
 }
 /* compareDino
@@ -386,7 +386,7 @@ int removeDinoRRN(int RRN, FILE *file, Header *head)
     // modify the register
     head->status = '0';
     char removed = '1';
-    char thrash[155];
+    char thrash[155 + 1];
     memset(thrash, '$', 155 * sizeof(char));
     fwrite(&removed, sizeof(char), 1, file);
     fwrite(&head->top, sizeof(int), 1, file);

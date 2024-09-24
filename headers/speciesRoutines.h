@@ -9,9 +9,15 @@
 #include <string.h>
 
 #define REGISTER_LEN 160
+
 #define MAX_CSV_LINE_LEN 200
+
+#define MAX_STR_LEN 100
 #define MAX_VALUE_LEN 100
+#define MAX_FIELD_LEN 100
+
 #define SMALL_VALUE_LEN 20
+
 typedef struct
 {
     // control fields
@@ -41,5 +47,5 @@ void readFromInput(Dinosaur *temp_dino);
 void writeDinoRRN(int RRN, FILE *file, Dinosaur *temp_dino);
 int searchNextChain(int RRN, FILE *file);
 int isDinoRemovedRRN(int RRN, FILE *file);
-int copyDinoRRN(int RRN_1, int RRN_2, FILE *file);
+int swapDinoRRN(int RRN_1, int RRN_2, FILE *file);
 #endif

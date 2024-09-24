@@ -36,7 +36,7 @@ int funcionality6(char inputFileName[])
         if (!isDinoRemovedRRN(j, file)) // if dinosaur is removed
         {
             if (i != j)
-                copyDinoRRN(i, j, file); // swap register content
+                swapDinoRRN(i, j, file); // swap register content
             i++;
         }
         j++;

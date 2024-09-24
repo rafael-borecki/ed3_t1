@@ -42,22 +42,22 @@ int main()
     }
     case ('3'): {
         // SELECT WHERE funcionality
-        funcionality3(input1, input2, input3);
+        funcionality3(input2, input3);
         break;
     }
     case ('4'): {
         // REMOVE funcionality
-        funcionality4(input1, input2, input3);
+        funcionality4(input2, input3);
         break;
     }
     case ('5'): {
         // INSERT INTO funcionality
-        funcionality5(input1, input2, input3);
+        funcionality5(input2, input3);
         break;
     }
     case ('6'): {
         // COMPACT funcionality
-        funcionality6(input1, input2, input3);
+        funcionality6(input3);
         break;
     }
     }

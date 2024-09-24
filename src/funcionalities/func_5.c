@@ -54,7 +54,7 @@ int funcionality5(char inputFileName[], char query_num[])
         else
         {
             int RRN = head.top;
-            head.top = searchNextChain(RRN, file, &temp_dino);
+            head.top = searchNextChain(RRN, file);
             // updating header informations
             writeDinoRRN(RRN, file, &temp_dino);
             head.remRegNum -= 1;

@@ -13,7 +13,7 @@ int funcionality4(char inputFileName[], char query_num[])
     int n = atoi(query_num);
     for (int i = 1; i <= n; i++)
     {
-        char field[MAX_CSV_LEN], value[MAX_CSV_LEN];
+        char field[MAX_FIELD_LEN], value[MAX_VALUE_LEN];
         scanf("%s", field);
         scan_quote_string(value);
 
