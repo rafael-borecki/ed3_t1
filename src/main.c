@@ -62,7 +62,7 @@ int main()
 
     case ('6'):
         // COMPACT funcionality
-        funcionality6(input3);
+        funcionality6(input2);
         break;
 
     default:

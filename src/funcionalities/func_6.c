@@ -8,7 +8,7 @@ int funcionality6(char inputFileName[])
     if (!file)
     {
         msg_default_error();
-        return EXIT_FAILURE;
+        return 0;
     }
 
     // read header informations
@@ -17,7 +17,7 @@ int funcionality6(char inputFileName[])
     {
         msg_no_registers();
         return 0;
-    };
+    }
     if (head.status == '0')
     {
         msg_default_error();

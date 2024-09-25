@@ -545,10 +545,10 @@ int swapDinoRRN(int RRN_1, int RRN_2, FILE *file)
     fread(&buffer2, sizeof(char), REGISTER_LEN, file);
 
     fseek(file, DISK_PAGE_LEN + (REGISTER_LEN * RRN_2), SEEK_SET);
-    fwrite(&buffer2, sizeof(char), REGISTER_LEN, file);
+    fwrite(&buffer1, sizeof(char), REGISTER_LEN, file);
 
     fseek(file, DISK_PAGE_LEN + (REGISTER_LEN * RRN_1), SEEK_SET);
-    fwrite(&buffer1, sizeof(char), REGISTER_LEN, file);
+    fwrite(&buffer2, sizeof(char), REGISTER_LEN, file);
 
     // return position
     fseek(file, save, SEEK_SET);

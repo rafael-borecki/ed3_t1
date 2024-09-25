@@ -1,5 +1,5 @@
 CC          := gcc
-DEBUG_FLAGS := -g3 -pedantic -Werror=implicit-function-declaration -fsanitize=address,undefined
+DEBUG_FLAGS := #-g3 -pedantic -Werror=implicit-function-declaration -fsanitize=address,undefined
 FLAGS       := -Wall -Werror $(DEBUG_FLAGS)
 
 SRC         := ./src
