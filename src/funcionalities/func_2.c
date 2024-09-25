@@ -37,7 +37,6 @@ int funcionality2(char inputFileName[])
 
     fclose(file);
 
-    // print the number of disk page
     printf("Numero de paginas de disco: %d\n\n", head.diskPageNum);
 
     return 1;

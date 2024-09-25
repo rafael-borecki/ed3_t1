@@ -1,7 +1,5 @@
 #include "./../../headers/func_1.h"
 
-#define DEBUG_FUNC1_PRINT 0
-
 int funcionality1(char inputFileName[], char outputFileName[])
 {
     // opening files
@@ -36,8 +34,6 @@ int funcionality1(char inputFileName[], char outputFileName[])
         // if a register was readed, then write it on binary file
         if (ReadFromCsv(&dino, file_in))
         {
-            if (DEBUG_FUNC1_PRINT)
-                printDino(dino);
             writeDinoFile(&dino, file_out);
             register_num++;
         }

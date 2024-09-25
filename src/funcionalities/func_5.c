@@ -1,19 +1,12 @@
 #include "./../../headers/func_5.h"
 
-#define DEBUG 0
-#define DEBUG1 0
-
 int funcionality5(char inputFileName[], char query_num[])
 {
     int n = atoi(query_num);
     for (int i = 1; i <= n; i++)
     {
-        // read the informations from input
         Dinosaur temp_dino;
         readFromInput(&temp_dino);
-
-        if (DEBUG)
-            printDino(temp_dino);
 
         // opening file to make modificantions: read and write mode
         FILE *file;
@@ -62,7 +55,7 @@ int funcionality5(char inputFileName[], char query_num[])
 
         // finished modifying the file
         head.status = '1';
-        // update header informatons
+        // update header informations
         updateHeader(&head, file);
         fclose(file);
     }

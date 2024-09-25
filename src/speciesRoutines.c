@@ -1,8 +1,5 @@
 #include "./../headers/speciesRoutines.h"
 
-#define DEBUG_CSV 0
-#define DEBUG_PRINT 0
-
 /* ReadFomCsv
  * read one file from a .csv file and put its content into a struct Dinosaur passed by reference
  *
@@ -14,11 +11,6 @@ int ReadFromCsv(Dinosaur *temp_dino, FILE *file)
     char line[MAX_CSV_LINE_LEN + 1];
     if (fgets(line, MAX_CSV_LINE_LEN, file) != NULL)
     {
-        if (DEBUG_CSV)
-        {
-            for (int a = 0; a < strlen(line); a++)
-                printf("%d ", line[a]);
-        }
         char *token;
         char *point = line;
 
@@ -340,11 +332,6 @@ int compareDino(char *field, char *value, Dinosaur *temp_dino)
  */
 void printDino(Dinosaur temp_dino)
 {
-    if (DEBUG_PRINT)
-    {
-        printf("removed: %c\n", temp_dino.removed);
-        printf("chain: %d\n", temp_dino.chain);
-    }
     if (strcmp(temp_dino.name, ""))
         printf("Nome: %s\n", temp_dino.name);
     if (strcmp(temp_dino.specie_name, ""))
@@ -360,11 +347,6 @@ void printDino(Dinosaur temp_dino)
     if (temp_dino.velocity != -1)
         printf("Velocidade: %d %cm/h\n", temp_dino.velocity, temp_dino.measure_unit);
     printf("\n");
-    if (DEBUG_PRINT)
-    {
-        printf("population: %d\n", temp_dino.population);
-        printf("food: %s\n\n", temp_dino.food);
-    }
 }
 /* remove DinoRRN
  *

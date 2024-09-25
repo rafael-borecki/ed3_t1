@@ -7,7 +7,9 @@
  * Rafael Borecki Guimarães de Carvalho - 14604271
  * Renan Correia Monteiro Soares - 14605661
  *
- * Porcentagem
+ * Porcentagem de participação
+ * Rafael - 100%
+ * Renan - 100%
  *
  */
 

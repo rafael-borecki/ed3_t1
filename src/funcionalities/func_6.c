@@ -1,7 +1,5 @@
 #include "./../../headers/func_6.h"
 
-#define DEBUG 0
-
 int funcionality6(char inputFileName[])
 {
     // open file in "insert" mode: read and write mode
@@ -33,7 +31,7 @@ int funcionality6(char inputFileName[])
     int i = 0, j = 0;
     while (j < head.nextRRN) // j passes through all registers
     {
-        if (!isDinoRemovedRRN(j, file)) // if dinosaur is removed
+        if (isDinoRemovedRRN(j, file) == 0) // if not removed
         {
             if (i != j)
                 swapDinoRRN(i, j, file); // swap register content

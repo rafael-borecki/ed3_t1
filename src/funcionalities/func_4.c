@@ -1,7 +1,5 @@
 #include "./../../headers/func_4.h"
 
-#define DEBUG 0
-
 int funcionality4(char inputFileName[], char query_num[])
 {
     // input2 is a string that has the name of the binary file
@@ -15,9 +13,6 @@ int funcionality4(char inputFileName[], char query_num[])
         char field[MAX_FIELD_LEN], value[MAX_VALUE_LEN];
         scanf("%s", field);
         scan_quote_string(value);
-
-        if (DEBUG)
-            printf("%s %s\n", field, value);
 
         // opening file with read mode
         FILE *file;

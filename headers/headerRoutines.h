@@ -4,6 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define DISK_PAGE_LEN 1600
+#define REGISTER_LEN 160
+
 typedef struct
 {
     char status;
